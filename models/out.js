@@ -1,6 +1,6 @@
 module.exports = (sequelize, DataTypes) => {
-  const Out = sequelize.define(
-    "Out",
+  const Outs = sequelize.define(
+    "Outs",
     {
       sheets_id: {
         type: DataTypes.INTEGER,
@@ -25,9 +25,9 @@ module.exports = (sequelize, DataTypes) => {
       collate: "utf8_general_ci",
     }
   );
-  Out.associate = (db) => {
-    db.Out.hasMany(db.Sheets);
-    db.Out.hasMany(db.Storages);
+  Outs.associate = (db) => {
+    db.Outs.hasMany(db.Sheets);
+    db.Outs.hasMany(db.Storages);
   };
-  return Out;
+  return Outs;
 };

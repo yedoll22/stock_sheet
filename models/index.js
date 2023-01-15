@@ -1,10 +1,16 @@
+/**
+ * 시퀄라이즈 폴더 구조
+ * config
+ * models
+ * seeders : 초기데이터 입력
+ * migrations : 데이터 부분적으로 수정
+ */
 const fs = require("fs");
 const path = require("path");
 const Sequelize = require("sequelize");
-const process = require("process");
 const basename = path.basename(__filename);
 const env = process.env.NODE_ENV || "development";
-const config = require("../config/config.json")[env];
+const config = require(__dirname + "/../config/config.js")[env];
 const db = {};
 
 let sequelize;

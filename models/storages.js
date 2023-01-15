@@ -18,8 +18,8 @@ module.exports = (sequelize, DataTypes) => {
     }
   );
   Storages.associate = (db) => {
-    db.Storages.belongsTo(db.In);
-    db.Storages.belongsTo(db.Out);
+    db.Storages.belongsTo(db.Ins);
+    db.Storages.belongsTo(db.Outs);
   };
   return Storages;
 };

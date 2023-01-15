@@ -23,8 +23,8 @@ module.exports = (sequelize, DataTypes) => {
     }
   );
   Sheets.associate = (db) => {
-    db.Sheets.belongsTo(db.In);
-    db.Sheets.belongsTo(db.Out);
+    db.Sheets.belongsTo(db.Ins);
+    db.Sheets.belongsTo(db.Outs);
   };
   return Sheets;
 };

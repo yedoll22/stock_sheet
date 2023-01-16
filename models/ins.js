@@ -2,29 +2,23 @@ module.exports = (sequelize, DataTypes) => {
   const Ins = sequelize.define(
     "Ins",
     {
-      sheets_id: {
-        type: DataTypes.INTEGER,
-      },
-      storages_id: {
-        type: DataTypes.INTEGER,
-      },
       date: {
         type: DataTypes.DATE,
+        defalutValue: sequelize.literal("now()"),
       },
       quantity: {
         type: DataTypes.INTEGER,
       },
       category: {
         type: DataTypes.STRING(10),
-        allowNull: false,
+        // allowNull: false,
       },
       panding: {
         type: DataTypes.STRING(1),
-        allowNull: false,
       },
       orderer: {
         type: DataTypes.STRING(10),
-        allowNull: false,
+        // allowNull: false,
       },
       order_date: {
         type: DataTypes.DATE,
@@ -37,8 +31,14 @@ module.exports = (sequelize, DataTypes) => {
     }
   );
   Ins.associate = (db) => {
-    db.Ins.hasMany(db.Sheets);
-    db.Ins.hasMany(db.Storages);
+    db.Ins.belongsTo(db.Sheets, {
+      foreignKey: "sheets_id",
+      targetKey: "id",
+    });
+    db.Ins.belongsTo(db.Storages, {
+      foreignKey: "storages_id",
+      targetKey: "id",
+    });
   };
   return Ins;
 };

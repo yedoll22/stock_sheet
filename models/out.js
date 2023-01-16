@@ -26,8 +26,14 @@ module.exports = (sequelize, DataTypes) => {
     }
   );
   Outs.associate = (db) => {
-    db.Outs.hasMany(db.Sheets);
-    db.Outs.hasMany(db.Storages);
+    db.Outs.belongsTo(db.Sheets, {
+      foreignKey: "sheets_id",
+      targetKey: "id",
+    });
+    db.Outs.belongsTo(db.Storages, {
+      foreignKey: "storages_id",
+      targetKey: "id",
+    });
   };
   return Outs;
 };

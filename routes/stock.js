@@ -1,14 +1,11 @@
 const express = require("express");
 const router = express.Router();
+const stockController = require("../controller/stock.js");
+router.get("/", stockController.get);
+// router.get("/:type", stockController.getStockBySheet);
+// router.get("/:storage", stockController.getStorageBySheet);
 
-// router.get("/:type", (req, res) => {
-//   const params = req.params;
-
-//   res.json("ok");
-// });
-router.get("stock/:type", stockController.getStockBySheet);
-router.get("stock/:storage", stockController.getStorageBySheet);
-
-router.post("/", stockController.postIn);
+// router.post("/", stockController.postIn);
+router.post("/", stockController.post);
 
 module.exports = router;

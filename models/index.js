@@ -16,7 +16,10 @@ const db = {};
 let sequelize;
 if (config.use_env_variable) {
   sequelize = new Sequelize(process.env[config.use_env_variable], config);
+  console.log("여기냐?");
 } else {
+  console.log("아님 여기냐?");
+
   sequelize = new Sequelize(
     config.database,
     config.username,

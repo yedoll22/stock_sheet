@@ -18,8 +18,14 @@ module.exports = (sequelize, DataTypes) => {
     }
   );
   Storages.associate = (db) => {
-    db.Storages.belongsTo(db.Ins);
-    db.Storages.belongsTo(db.Outs);
+    db.Storages.hasMany(db.Ins, {
+      foreignKey: "storages_id",
+      sourceKey: "id",
+    });
+    db.Storages.hasMany(db.Outs, {
+      foreignKey: "storages_id",
+      sourceKey: "id",
+    });
   };
   return Storages;
 };

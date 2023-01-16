@@ -23,8 +23,14 @@ module.exports = (sequelize, DataTypes) => {
     }
   );
   Sheets.associate = (db) => {
-    db.Sheets.belongsTo(db.Ins);
-    db.Sheets.belongsTo(db.Outs);
+    db.Sheets.hasMany(db.Ins, {
+      foreignKey: "sheets_id",
+      sourceKey: "id",
+    });
+    db.Sheets.hasMany(db.Outs, {
+      foreignKey: "sheets_id",
+      sourceKey: "id",
+    });
   };
   return Sheets;
 };

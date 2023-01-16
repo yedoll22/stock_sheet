@@ -13,8 +13,11 @@ db.sequelize
   })
   .catch(console.error);
 
-app.use("/list", listRouter);
+app.get("/", (req, res) => {
+  res.send("테스트중");
+});
 app.use("/stock", stockRouter);
+console.log(stockRouter);
 
 app.listen(app.get("port"), () => {
   console.log("서버연결성공");

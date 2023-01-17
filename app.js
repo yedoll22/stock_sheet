@@ -4,6 +4,8 @@ dotenv.config();
 const db = require("./models");
 const app = express();
 app.set("port", process.env.PORT);
+app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
 const stockRouter = require("./routes/stock");
 
 db.sequelize

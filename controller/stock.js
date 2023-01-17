@@ -6,9 +6,9 @@ module.exports = {
   get: async (req, res) => {
     // try {
     const stockList = await Ins.findAll({
-      attributes: ["id", "date", "quantity"],
+      attributes: ["id", "date", "quantity", "createdAt"],
       include: [
-        { model: Storages, attributes: ["name"] },
+        { model: Storages, attributes: ["name", "color_code"] },
         { model: Sheets, attributes: ["pattern", "type", "width", "height"] },
       ],
     });
@@ -19,14 +19,14 @@ module.exports = {
   },
 
   post: async (req, res) => {
-    // const {'date', 'quatity', 'type', 'pattern'} = req.body;
+    const { date, quantity, sheets_id, storages_id } = req.body;
     await Ins.create({
-      date: new Date(),
-      quantity: 800,
-      sheets_id: 55,
-      storages_id: 1,
+      date,
+      quantity,
+      sheets_id,
+      storages_id,
       category: "입고",
     });
-    res.send("ok");
+    res.status(200);
   },
 };

@@ -4,7 +4,7 @@ module.exports = (sequelize, DataTypes) => {
     {
       date: {
         type: DataTypes.DATE,
-        defalutValue: sequelize.literal("now()"),
+        // defalutValue: sequelize.literal("now()"),
       },
       quantity: {
         type: DataTypes.INTEGER,

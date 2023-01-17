@@ -7,7 +7,16 @@ const config = {
     database: "stock_sheet",
     host: "127.0.0.1",
     dialect: "mysql",
+    // https://wedul.site/548 시간설정 timezoe만 +09:00으로 바꾸기
     timezone: "+09:00",
+    dialectOptions: {
+      charset: "utf8mb4",
+      dateStrings: true,
+      typeCast: true,
+    },
+    define: {
+      timestamps: true,
+    },
   },
   test: {
     username: "root",

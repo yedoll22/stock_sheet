@@ -18,7 +18,7 @@ module.exports = (sequelize, DataTypes) => {
       },
       orderer: {
         type: DataTypes.STRING(10),
-        // allowNull: false,
+        allowNull: true,
       },
       order_date: {
         type: DataTypes.DATE,
@@ -38,6 +38,10 @@ module.exports = (sequelize, DataTypes) => {
     db.Ins.belongsTo(db.Storages, {
       foreignKey: "storages_id",
       targetKey: "id",
+    });
+    db.Ins.hasMany(db.Stocks, {
+      foreignKey: "sheets_id",
+      sourceKey: "id",
     });
   };
   return Ins;

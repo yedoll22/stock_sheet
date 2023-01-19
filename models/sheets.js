@@ -2,6 +2,11 @@ module.exports = (sequelize, DataTypes) => {
   const Sheets = sequelize.define(
     "Sheets",
     {
+      id: {
+        type: DataTypes.STRING(20),
+        primaryKey: true,
+        unique: true,
+      },
       pattern: {
         type: DataTypes.STRING(10),
       },

@@ -12,21 +12,7 @@ module.exports = {
      *   isBetaMember: false
      * }], {});
      */
-    /**
-   * pattern: {
-        type: DataTypes.STRING(10),
-      },
-      type: {
-        type: DataTypes.STRING(10),
-        allowNull: false,
-      },
-      width: {
-        type: DataTypes.INTEGER,
-      },
-      height: {
-        type: DataTypes.INTEGER,
-      },
-   */
+    // id type_pattern 형태로 추가하기
     await queryInterface.bulkInsert(
       "Sheets",
       [

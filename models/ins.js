@@ -39,9 +39,9 @@ module.exports = (sequelize, DataTypes) => {
       foreignKey: "storages_id",
       targetKey: "id",
     });
-    db.Ins.hasMany(db.Stocks, {
+    db.Ins.belongsTo(db.Stocks, {
       foreignKey: "sheets_id",
-      sourceKey: "id",
+      targetKey: "id",
     });
   };
   return Ins;

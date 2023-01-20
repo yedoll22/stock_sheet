@@ -24,13 +24,13 @@ module.exports = (sequelize, DataTypes) => {
     }
   );
   Stocks.associate = (db) => {
-    db.Stocks.belongsTo(db.Ins, {
+    db.Stocks.hasMany(db.Ins, {
       foreignKey: "Ins_id",
-      targetKey: "id",
+      sourceKey: "id",
     });
-    db.Stocks.belongsTo(db.Outs, {
+    db.Stocks.hasMany(db.Outs, {
       foreignKey: "Outs_id",
-      targetKey: "id",
+      sourceKey: "id",
     });
   };
   return Stocks;

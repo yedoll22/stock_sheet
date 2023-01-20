@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 const stockController = require("../controller/stock.js");
 router.get("/", stockController.get);
-// router.get("/:type", stockController.getStockBySheet);
+router.get("/:type", stockController.getStockBySheet);
 router.get("/:storage", stockController.getStorageByStorage);
 
 // router.post("/", stockController.postIn);

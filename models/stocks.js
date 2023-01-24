@@ -7,12 +7,6 @@ module.exports = (sequelize, DataTypes) => {
         primaryKey: true,
         unique: true,
       },
-      Ins_id: {
-        type: DataTypes.INTEGER,
-      },
-      Outs_id: {
-        type: DataTypes.INTEGER,
-      },
       quantity: {
         type: DataTypes.INTEGER,
       },
@@ -25,11 +19,19 @@ module.exports = (sequelize, DataTypes) => {
   );
   Stocks.associate = (db) => {
     db.Stocks.hasMany(db.Ins, {
-      foreignKey: "Ins_id",
+      foreignKey: "stocks_id",
       sourceKey: "id",
     });
     db.Stocks.hasMany(db.Outs, {
-      foreignKey: "Outs_id",
+      foreignKey: "stocks_id",
+      sourceKey: "id",
+    });
+    db.Stocks.hasMany(db.Moves, {
+      foreignKey: "oldStocks_id",
+      sourceKey: "id",
+    });
+    db.Stocks.hasMany(db.Moves, {
+      foreignKey: "newStocks_id",
       sourceKey: "id",
     });
   };

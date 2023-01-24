@@ -116,7 +116,7 @@ module.exports = {
           updatedAt: new Date(),
         },
         {
-          id: "K321_350B/W",
+          id: "KF004_350B/W",
           pattern: "KF004",
           type: "350B/W",
           createdAt: new Date(),

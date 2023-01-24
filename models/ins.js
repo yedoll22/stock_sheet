@@ -40,7 +40,7 @@ module.exports = (sequelize, DataTypes) => {
       targetKey: "id",
     });
     db.Ins.belongsTo(db.Stocks, {
-      foreignKey: "sheets_id",
+      foreignKey: "stocks_id",
       targetKey: "id",
     });
   };

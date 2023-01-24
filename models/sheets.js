@@ -36,6 +36,10 @@ module.exports = (sequelize, DataTypes) => {
       foreignKey: "sheets_id",
       sourceKey: "id",
     });
+    db.Sheets.hasMany(db.Moves, {
+      foreignKey: "sheets_id",
+      sourceKey: "id",
+    });
   };
   return Sheets;
 };

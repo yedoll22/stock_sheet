@@ -2,13 +2,7 @@ module.exports = (sequelize, DataTypes) => {
   const Outs = sequelize.define(
     "Outs",
     {
-      sheets_id: {
-        type: DataTypes.INTEGER,
-      },
-      storages_id: {
-        type: DataTypes.INTEGER,
-      },
-      Date: {
+      date: {
         type: DataTypes.DATE,
       },
       quantity: {
@@ -35,7 +29,7 @@ module.exports = (sequelize, DataTypes) => {
       targetKey: "id",
     });
     db.Outs.belongsTo(db.Stocks, {
-      foreignKey: "sheets_id",
+      foreignKey: "stocks_id",
       targetKey: "id",
     });
   };

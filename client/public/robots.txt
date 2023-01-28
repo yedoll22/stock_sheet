@@ -1,0 +1,7 @@
+# https://www.robotstxt.org/robotstxt.html
+User-agent: *
+Disallow:
+
+# 검색엔진 최적화 도구
+# 참조 
+# https://crispyblog.kr/development/common/3

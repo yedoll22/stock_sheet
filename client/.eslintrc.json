@@ -1,0 +1,36 @@
+{
+  "env": {
+    "browser": true,
+    "es2021": true
+  },
+  "extends": [
+    "plugin:prettier/recommended",
+    "plugin:react/recommended",
+    "standard"
+  ],
+  "overrides": [],
+  "parserOptions": {
+    "ecmaVersion": "latest",
+    "sourceType": "module",
+    "ecmaFeatures": {
+      "jsx": true
+    }
+  },
+  "plugins": ["react"],
+  "ignorePatterns": [
+    "node_modules/",
+    "postcss.config.js",
+    ".prettierrc",
+    "tailwind.config.js"
+  ],
+  "rules": {
+    "react/react-in-jsx-scope": "off",
+    "react/jsx-filename-extension": [1, { "extensions": [".js", ".jsx"] }],
+    "prettier/prettier": ["error", { "singleQuote": true, "semi": false }],
+    "space-before-function-paren": ["error", "never"]
+  }
+}
+
+// 세팅참고:
+// https://velog.io/@dishate/react-%ED%98%91%EC%97%85-%EC%85%8B%ED%8C%85%ED%95%98%EA%B8%B0-eslint-prettier-.vscode
+// https://stackoverflow.com/questions/42640636/react-must-be-in-scope-when-using-jsx-react-react-in-jsx-scope

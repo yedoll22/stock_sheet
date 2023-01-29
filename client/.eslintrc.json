@@ -27,7 +27,10 @@
     "react/react-in-jsx-scope": "off",
     "react/jsx-filename-extension": [1, { "extensions": [".js", ".jsx"] }],
     "prettier/prettier": ["error", { "singleQuote": true, "semi": false }],
-    "space-before-function-paren": ["error", "never"]
+    "space-before-function-paren": ["error", "never"],
+    //멀티라인 삼항연산자 허용
+    "requireMultiLineTernary": "off",
+    "multiline-ternary": ["error", "always"]
   }
 }
 

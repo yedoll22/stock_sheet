@@ -1,14 +1,26 @@
-import React from "react";
-import "./App.css";
+const express = require("express");
+const dotenv = require("dotenv");
+dotenv.config();
+const db = require("./models");
+const app = express();
+app.set("port", process.env.PORT);
+app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
+const stockRouter = require("./routes/stock");
 
-function App() {
-  const a = "hello";
+db.sequelize
+  .sync()
+  .then(() => {
+    console.log("db 연결 성공 ");
+  })
+  .catch(console.error);
 
-  return (
-    <div>
-      <p>와우</p>
-    </div>
-  );
-}
+app.get("/", (req, res) => {
+  res.send("테스트중");
+});
+app.use("/stock", stockRouter);
+console.log(stockRouter);
 
-export default App;
+app.listen(app.get("port"), () => {
+  console.log("서버연결성공");
+});

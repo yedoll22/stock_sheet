@@ -1,5 +1,6 @@
 import React from 'react'
 import { Link, useLocation } from 'react-router-dom'
+import { PATHNAME, TAB } from '../static/constant'
 
 function Tab() {
   const { pathname } = useLocation()
@@ -15,11 +16,17 @@ function Tab() {
   return (
     <nav className="flex justify-between items-center mb-3">
       <div className="border border-[#074073]">
-        <Link to="/" className={`${getTabStyle('/')}`}>
-          재고별 재고 현황
+        <Link
+          to={`${PATHNAME.TYPE}`}
+          className={`${getTabStyle(PATHNAME.TYPE)}`}
+        >
+          {TAB.TYPE}
         </Link>
-        <Link to="/storage" className={`${getTabStyle('/storage')}`}>
-          위치별 재고 현황
+        <Link
+          to={`${PATHNAME.STORAGE}`}
+          className={`${getTabStyle(PATHNAME.STORAGE)}`}
+        >
+          {TAB.STORAGE}
         </Link>
       </div>
       <div className="flex justify-center items-center ml-[20px] w-[64px] h-[64px] bg-[#D2D904] text-white text-5xl font-semibold rounded-full cursor-pointer">

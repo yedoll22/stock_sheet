@@ -3,9 +3,11 @@ const dotenv = require("dotenv");
 dotenv.config();
 const db = require("./models");
 const app = express();
+const cors = require("cors");
 app.set("port", process.env.PORT);
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
+app.use(cors());
 const stockRouter = require("./routes/stock");
 
 db.sequelize

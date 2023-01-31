@@ -1,4 +1,5 @@
 import React from 'react'
+import Dropdown from '../components/Dropdown'
 import Tab from '../components/Tab'
 import Table from '../components/Table'
 
@@ -7,7 +8,7 @@ function StockByStorage() {
     <>
       <Tab />
       <div className="mb-3">
-        <p>재질</p>
+        <Dropdown />
       </div>
       <Table />
     </>

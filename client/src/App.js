@@ -6,7 +6,7 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route index element={<StockByType />} />
+        <Route path="type" element={<StockByType />} />
         <Route path="storage" element={<StockByStorage />} />
       </Routes>
     </BrowserRouter>

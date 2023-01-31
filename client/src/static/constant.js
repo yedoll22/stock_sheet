@@ -1,5 +1,5 @@
 const PATHNAME = Object.freeze({
-  TYPE: '/',
+  TYPE: '/type',
   STORAGE: '/storage'
 })
 

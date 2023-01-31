@@ -14,7 +14,7 @@ function Tab() {
   }
 
   return (
-    <nav className="flex justify-between items-center mb-3">
+    <nav className="flex justify-between items-center mb-7">
       <div className="border border-[#074073]">
         <Link
           to={`${PATHNAME.TYPE}`}

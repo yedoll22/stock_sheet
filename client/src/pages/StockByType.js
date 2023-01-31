@@ -7,7 +7,7 @@ function StockByType() {
     <>
       <Tab />
       <div className="mb-3">
-        <p>위치</p>
+        <p>재질</p>
       </div>
       <Table />
     </>

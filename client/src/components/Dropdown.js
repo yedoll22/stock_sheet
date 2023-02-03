@@ -3,7 +3,6 @@ import { useLocation } from 'react-router-dom'
 
 function Dropdown() {
   const [selected, setSelected] = useState('선택하세요.')
-  const [isOpen, setIsOpen] = useState(false)
 
   const { pathname } = useLocation()
   let content = { title: '재질', text: ['350IV', '350B/W', '300ART'] }

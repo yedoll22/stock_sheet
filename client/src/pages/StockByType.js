@@ -4,32 +4,39 @@ import Tab from '../components/Tab'
 import Table from '../components/Table'
 
 function StockByType() {
-  const outsideRef = useRef()
+  const outsideRef = useOutSideRef(null)
   const [isOpen, setIsOpen] = useState(false)
+  function useOutSideRef() {
+    const ref = useRef(null)
 
-  function handleClickOutside(event) {
-    if (outsideRef.current && !outsideRef.current.contains(event.target)) {
-      console.log(
-        outsideRef.current && !outsideRef.current.contains(event.target)
-      )
-      setIsOpen(fal)
-    }
+    useEffect(() => {
+      function handleClickOutside(event) {
+        if (ref.current && !ref.current.contains(event.target)) {
+          setIsOpen(false)
+        }
+      }
+      document.addEventListener('click', handleClickOutside)
+
+      return () => {
+        document.removeEventListener('click', handleClickOutside)
+      }
+    })
+
+    return ref
   }
 
-  useEffect(() => {
-    document.addEventListener('click', handleClickOutside)
-    return () => {
-      document.removeEventListener('click', handleClickOutside)
-    }
-  })
   return (
-    <div>
+    <>
       <Tab />
-      <div ref={outsideRef} className="mb-3">
-        <Dropdown />
+      <div className="mb-3">
+        <Dropdown
+          outsideRef={outsideRef}
+          setIsOpen={setIsOpen}
+          isOpen={isOpen}
+        />
       </div>
       <Table />
-    </div>
+    </>
   )
 }
 

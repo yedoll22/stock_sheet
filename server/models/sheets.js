@@ -2,11 +2,11 @@ module.exports = (sequelize, DataTypes) => {
   const Sheets = sequelize.define(
     "Sheets",
     {
-      id: {
-        type: DataTypes.STRING(20),
-        primaryKey: true,
-        unique: true,
-      },
+      // id: {
+      //   type: DataTypes.STRING(20),
+      //   primaryKey: true,
+      //   unique: true,
+      // },
       pattern: {
         type: DataTypes.STRING(10),
       },
@@ -28,16 +28,8 @@ module.exports = (sequelize, DataTypes) => {
     }
   );
   Sheets.associate = (db) => {
-    db.Sheets.hasMany(db.Ins, {
-      foreignKey: "sheets_id",
-      sourceKey: "id",
-    });
-    db.Sheets.hasMany(db.Outs, {
-      foreignKey: "sheets_id",
-      sourceKey: "id",
-    });
-    db.Sheets.hasMany(db.Moves, {
-      foreignKey: "sheets_id",
+    db.Sheets.hasMany(db.Stocks, {
+      foreignKey: "sheet",
       sourceKey: "id",
     });
   };

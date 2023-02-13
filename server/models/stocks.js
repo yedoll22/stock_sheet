@@ -2,10 +2,11 @@ module.exports = (sequelize, DataTypes) => {
   const Stocks = sequelize.define(
     "Stocks",
     {
-      id: {
-        type: DataTypes.STRING(30),
-        primaryKey: true,
-        unique: true,
+      date: {
+        type: DataTypes.DATE,
+      },
+      category: {
+        type: DataTypes.STRING(10),
       },
       quantity: {
         type: DataTypes.INTEGER,
@@ -18,20 +19,12 @@ module.exports = (sequelize, DataTypes) => {
     }
   );
   Stocks.associate = (db) => {
-    db.Stocks.hasMany(db.Ins, {
-      foreignKey: "stocks_id",
+    db.Stocks.belongsTo(db.Sheets, {
+      foreignKey: "sheet",
       sourceKey: "id",
     });
-    db.Stocks.hasMany(db.Outs, {
-      foreignKey: "stocks_id",
-      sourceKey: "id",
-    });
-    db.Stocks.hasMany(db.Moves, {
-      foreignKey: "oldStocks_id",
-      sourceKey: "id",
-    });
-    db.Stocks.hasMany(db.Moves, {
-      foreignKey: "newStocks_id",
+    db.Stocks.belongsTo(db.Storages, {
+      foreignKey: "storage",
       sourceKey: "id",
     });
   };

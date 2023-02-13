@@ -9,6 +9,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cors());
 const stockRouter = require("./routes/stock");
+// const storageRouter = require("./routes/byStorage");
 
 db.sequelize
   .sync()

@@ -6,26 +6,20 @@ module.exports = {
     try {
       // let type = req.params.type;
 
+      const total = [sequelize.fn("sum", sequelize.col("quantity")), "total"];
       const stockList = await Stocks.findAll({
-        include: [{ model: Sheets, attributes: [], required: false }],
+        include: [{ model: Sheets, attributes: [] }],
 
         attributes: {
           include: [
-            [sequelize.col("sheet.pattern"), "pattern"],
-            [sequelize.col("sheet.type"), "type"],
-            // [sequelize.literal("concat('{name:',json_arrayagg((select name from storages where stocks.storage = storages.id)),', color:',json_arrayagg((select color_code from storages where stocks.storage = storages.id)),'}')"),"storageDetails",],
-            [
-              sequelize.literal(
-                "json_arrayagg((select name from storages where stocks.storage = storages.id))"
-              ),
-              "Name",
-            ],
-            [
-              sequelize.literal(
-                "json_arrayagg((select color_code from storages where stocks.storage = storages.id))"
-              ),
-              "color_code",
-            ],
+            [sequelize.col("Sheet.pattern"), "pattern"],
+            [sequelize.col("Sheet.type"), "type"],
+            [sequelize.col("Sheet.width"), "width"],
+            [sequelize.col("Sheet.height"), "height"],
+
+            // [sequelize.literal("json_arrayagg((select distinct name from Storages where Stocks.storage = Storages.id))"
+            //   ),"Name",],
+
             [sequelize.fn("sum", sequelize.col("quantity")), "total"],
           ],
           exclude: [
@@ -41,9 +35,8 @@ module.exports = {
         },
 
         group: ["sheet"],
-        // where: { sheet: 45 },
       });
-      // select pattern, type, concat('{name:',json_arrayagg((select name from storages where stocks.storage = storages.id)),', color:',json_arrayagg((select color_code from storages where stocks.storage = storages.id)),'}'), sum(quantity) from stocks left join sheets on stocks.sheet = sheets.id group by sheet;
+      // select pattern, type, concat('{name:',json_arrayagg((select distinct name from Storages where Stocks.storage = Storages.id)),', color:',json_arrayagg((select distinct color_code from Storages where Stocks.storage = Storages.id)),'}'), sum(quantity) from Stocks left join Sheets on Stocks.sheet = Sheets.id group by sheet;
 
       res.status(200).json(stockList);
     } catch (err) {
@@ -62,10 +55,12 @@ module.exports = {
 
         attributes: {
           include: [
-            [sequelize.col("storage.name"), "name"],
-            [sequelize.col("storage.color_code"), "color"],
-            [sequelize.col("sheet.pattern"), "pattern"],
-            [sequelize.col("sheet.type"), "type"],
+            [sequelize.col("Storage.name"), "name"],
+            [sequelize.col("Storage.color_code"), "color"],
+            [sequelize.col("Sheet.pattern"), "pattern"],
+            [sequelize.col("Sheet.type"), "type"],
+            [sequelize.col("Sheet.width"), "width"],
+            [sequelize.col("Sheet.height"), "height"],
             [sequelize.fn("sum", sequelize.col("quantity")), "total"],
           ],
           exclude: [
@@ -94,7 +89,7 @@ module.exports = {
     try {
       let name = req.params.storage;
 
-      const id = await Storages.findOne({
+      const storage = await Storages.findOne({
         attributes: ["id"],
         where: { name },
       });
@@ -107,10 +102,12 @@ module.exports = {
 
         attributes: {
           include: [
-            [sequelize.col("storage.name"), "name"],
-            [sequelize.col("storage.color_code"), "color"],
-            [sequelize.col("sheet.pattern"), "pattern"],
-            [sequelize.col("sheet.type"), "type"],
+            [sequelize.col("Storage.name"), "name"],
+            [sequelize.col("Storage.color_code"), "color"],
+            [sequelize.col("Sheet.pattern"), "pattern"],
+            [sequelize.col("Sheet.type"), "type"],
+            [sequelize.col("Sheet.width"), "width"],
+            [sequelize.col("Sheet.height"), "height"],
             [sequelize.fn("sum", sequelize.col("quantity")), "total"],
           ],
           exclude: [
@@ -126,7 +123,7 @@ module.exports = {
         },
 
         group: ["storage", "sheet"],
-        where: { storage: id.id },
+        where: { storage: storage.id },
       });
       res.status(200).json(stockList);
     } catch (err) {
@@ -156,10 +153,10 @@ module.exports = {
 
         attributes: {
           include: [
-            [sequelize.col("storage.name"), "name"],
-            [sequelize.col("storage.color_code"), "color"],
-            [sequelize.col("sheet.pattern"), "pattern"],
-            [sequelize.col("sheet.type"), "type"],
+            [sequelize.col("Sheet.pattern"), "pattern"],
+            [sequelize.col("Sheet.type"), "type"],
+            [sequelize.col("Sheet.width"), "width"],
+            [sequelize.col("Sheet.height"), "height"],
             [sequelize.fn("sum", sequelize.col("quantity")), "total"],
           ],
           exclude: [
@@ -174,7 +171,7 @@ module.exports = {
           ],
         },
 
-        group: ["storage", "sheet"],
+        group: ["sheet"],
         where: { sheet: id.id },
       });
 
@@ -192,37 +189,49 @@ module.exports = {
         quantity,
         pattern,
         type,
-        storage,
-        oldStorage,
-        newStorage,
+        oldStorageName,
+        storageName,
         category,
       } = req.body;
-      const sheet = pattern + "_" + type;
+
+      const storage = await Storages.findOne({
+        attributes: ["id"],
+        where: { name: storageName },
+      });
+
+      const sheet = await Sheets.findOne({
+        attributes: ["id"],
+        where: { pattern, type },
+      });
 
       if (category === "재고이동") {
+        const oldStorage = await Storages.findOne({
+          attributes: ["id"],
+          where: { name: oldStorageName },
+        });
+
         await Stocks.create({
           date,
           category,
           quantity: -quantity,
-          sheet,
-          storage: oldStorage,
+          sheet: sheet.id,
+          storage: oldStorage.id,
         });
-        await Stocks.create({
-          date,
-          category,
-          quantity,
-          sheet,
-          storage: newStorage,
-        });
-      } else {
-        await Stocks.create({ date, category, quantity, sheet, storage });
       }
+      await Stocks.create({
+        date,
+        category,
+        quantity,
+        sheet: sheet.id,
+        storage: storage.id,
+      });
       return res.sendStatus(201);
     } catch (err) {
       console.log(err);
       return res.sendStatus(500);
     }
   },
+
   delete: async (req, res) => {
     await Stocks.destroy({
       where: {},

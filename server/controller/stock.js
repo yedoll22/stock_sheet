@@ -5,17 +5,82 @@ module.exports = {
   getStockBySheet: async (req, res) => {
     try {
       // let type = req.params.type;
+
       const stockList = await Stocks.findAll({
-        attributes: [
-          "sheet",
-          "storage",
-          [sequelize.fn("sum", sequelize.col("quantity")), "total"],
+        include: [{ model: Sheets, attributes: [], required: false }],
+
+        attributes: {
+          include: [
+            [sequelize.col("sheet.pattern"), "pattern"],
+            [sequelize.col("sheet.type"), "type"],
+            // [sequelize.literal("concat('{name:',json_arrayagg((select name from storages where stocks.storage = storages.id)),', color:',json_arrayagg((select color_code from storages where stocks.storage = storages.id)),'}')"),"storageDetails",],
+            [
+              sequelize.literal(
+                "json_arrayagg((select name from storages where stocks.storage = storages.id))"
+              ),
+              "Name",
+            ],
+            [
+              sequelize.literal(
+                "json_arrayagg((select color_code from storages where stocks.storage = storages.id))"
+              ),
+              "color_code",
+            ],
+            [sequelize.fn("sum", sequelize.col("quantity")), "total"],
+          ],
+          exclude: [
+            "date",
+            "category",
+            "quantity",
+            "createdAt",
+            "updatedAt",
+            "sheet",
+            "storage",
+            "id",
+          ],
+        },
+
+        group: ["sheet"],
+        // where: { sheet: 45 },
+      });
+      // select pattern, type, concat('{name:',json_arrayagg((select name from storages where stocks.storage = storages.id)),', color:',json_arrayagg((select color_code from storages where stocks.storage = storages.id)),'}'), sum(quantity) from stocks left join sheets on stocks.sheet = sheets.id group by sheet;
+
+      res.status(200).json(stockList);
+    } catch (err) {
+      console.log(err);
+      return res.sendStatus(500);
+    }
+  },
+
+  getStockByStorage: async (req, res) => {
+    try {
+      const stockList = await Stocks.findAll({
+        include: [
+          { model: Sheets, attributes: [] },
+          { model: Storages, attributes: [] },
         ],
-        group: ["sheet", "storage"],
-        // where: {
-        //   storage,
-        //   sheet,
-        // },
+
+        attributes: {
+          include: [
+            [sequelize.col("storage.name"), "name"],
+            [sequelize.col("storage.color_code"), "color"],
+            [sequelize.col("sheet.pattern"), "pattern"],
+            [sequelize.col("sheet.type"), "type"],
+            [sequelize.fn("sum", sequelize.col("quantity")), "total"],
+          ],
+          exclude: [
+            "date",
+            "category",
+            "quantity",
+            "createdAt",
+            "updatedAt",
+            "sheet",
+            "storage",
+            "id",
+          ],
+        },
+
+        group: ["storage", "sheet"],
       });
 
       res.status(200).json(stockList);
@@ -24,20 +89,93 @@ module.exports = {
       return res.sendStatus(500);
     }
   },
-  getStockByStorage: async (req, res) => {
+
+  getStockByStorageId: async (req, res) => {
     try {
-      // const { storage, sheet } = req.query;
+      let name = req.params.storage;
+
+      const id = await Storages.findOne({
+        attributes: ["id"],
+        where: { name },
+      });
+
       const stockList = await Stocks.findAll({
-        attributes: [
-          "sheet",
-          "storage",
-          [sequelize.fn("sum", sequelize.col("quantity")), "total"],
+        include: [
+          { model: Sheets, attributes: [] },
+          { model: Storages, attributes: [] },
         ],
-        group: ["storage"],
-        // where: {
-        //   storage,
-        //   sheet,
-        // },
+
+        attributes: {
+          include: [
+            [sequelize.col("storage.name"), "name"],
+            [sequelize.col("storage.color_code"), "color"],
+            [sequelize.col("sheet.pattern"), "pattern"],
+            [sequelize.col("sheet.type"), "type"],
+            [sequelize.fn("sum", sequelize.col("quantity")), "total"],
+          ],
+          exclude: [
+            "date",
+            "category",
+            "quantity",
+            "createdAt",
+            "updatedAt",
+            "sheet",
+            "storage",
+            "id",
+          ],
+        },
+
+        group: ["storage", "sheet"],
+        where: { storage: id.id },
+      });
+      res.status(200).json(stockList);
+    } catch (err) {
+      console.log(err);
+      return res.sendStatus(500);
+    }
+  },
+
+  getStockBySheetId: async (req, res) => {
+    try {
+      let sheet = req.params.sheet;
+      const sheetArr = sheet.split("_");
+
+      const id = await Sheets.findOne({
+        attributes: ["id"],
+        where: {
+          type: sheetArr[0],
+          pattern: sheetArr[1],
+        },
+      });
+
+      const stockList = await Stocks.findAll({
+        include: [
+          { model: Sheets, attributes: [] },
+          { model: Storages, attributes: [] },
+        ],
+
+        attributes: {
+          include: [
+            [sequelize.col("storage.name"), "name"],
+            [sequelize.col("storage.color_code"), "color"],
+            [sequelize.col("sheet.pattern"), "pattern"],
+            [sequelize.col("sheet.type"), "type"],
+            [sequelize.fn("sum", sequelize.col("quantity")), "total"],
+          ],
+          exclude: [
+            "date",
+            "category",
+            "quantity",
+            "createdAt",
+            "updatedAt",
+            "sheet",
+            "storage",
+            "id",
+          ],
+        },
+
+        group: ["storage", "sheet"],
+        where: { sheet: id.id },
       });
 
       res.status(200).json(stockList);

@@ -3,14 +3,14 @@ import { PATHNAME, THEAD } from '../static/constant'
 import Th from './Th'
 
 function TableHead({ pathname }) {
-  const { TYPE, PATTERN, STANDARD, QUANTITY, STORAGE } = THEAD
+  const { type, pattern, standard, quantity, storage } = THEAD
 
   const checkPathname = (pathname) => {
     switch (pathname) {
-      case PATHNAME.TYPE:
-        return [TYPE, PATTERN, STANDARD, QUANTITY, STORAGE]
-      case PATHNAME.STORAGE:
-        return [STORAGE, PATTERN, STANDARD, QUANTITY, TYPE]
+      case PATHNAME.storage:
+        return [storage, pattern, standard, quantity, type]
+      default:
+        return [type, pattern, standard, quantity, storage]
     }
   }
 

@@ -1,16 +1,7 @@
 import { useState } from 'react'
-import { useLocation } from 'react-router-dom'
 
-function Dropdown({ outsideRef, setIsOpen, isOpen }) {
+function Dropdown({ outsideRef, setIsOpen, isOpen, content }) {
   const [selected, setSelected] = useState('선택하세요.')
-
-  const { pathname } = useLocation()
-  let content = { title: '재질', text: ['350IV', '350B/W', '300ART'] }
-  if (pathname === '/storage')
-    content = {
-      title: '위치',
-      text: ['1층 위', '1층 밑', '소부실 앞', '인쇄실']
-    }
 
   return (
     <div className="mb-7 flex item-center relative">

@@ -1,19 +1,27 @@
 const PATHNAME = Object.freeze({
-  TYPE: '/type',
-  STORAGE: '/storage'
+  type: '/type',
+  storage: '/storage'
 })
 
 const TAB = Object.freeze({
-  TYPE: '재질별 재고 현황',
-  STORAGE: '위치별 재고 현황'
+  type: '재질별 재고 현황',
+  storage: '위치별 재고 현황'
 })
 
 const THEAD = Object.freeze({
-  TYPE: '재질',
-  PATTERN: '패턴',
-  STANDARD: '규격',
-  QUANTITY: '수량',
-  STORAGE: '위치'
+  type: '재질',
+  pattern: '패턴',
+  standard: '규격',
+  quantity: '수량',
+  storage: '위치'
 })
 
-export { PATHNAME, TAB, THEAD }
+const DROPDOWN_CONTENT = Object.freeze({
+  type: { title: '재질', text: ['350IV', '350B/W', '300ART'] },
+  storage: {
+    title: '위치',
+    text: ['1층 위', '1층 밑', '소부실 앞', '인쇄실']
+  }
+})
+
+export { PATHNAME, TAB, THEAD, DROPDOWN_CONTENT }

@@ -7,10 +7,12 @@ function Tr({ pathname, rowContents }) {
 
   const checkPathname = (pathname) => {
     switch (pathname) {
-      case PATHNAME.TYPE:
-        return [type, pattern, standard, quantity, storage]
-      case PATHNAME.STORAGE:
+      // case PATHNAME.type:
+      //   return [type, pattern, standard, quantity, storage]
+      case PATHNAME.storage:
         return [storage, pattern, standard, quantity, type]
+      default:
+        return [type, pattern, standard, quantity, storage]
     }
   }
 

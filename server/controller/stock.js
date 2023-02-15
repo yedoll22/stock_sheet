@@ -1,7 +1,35 @@
 const { Stocks, Sheets, Storages, sequelize } = require("../models");
-const { Op, fn, col } = require("sequelize");
 
 module.exports = {
+  get: async (req, res) => {
+    try {
+      const stockList = await Stocks.findAll({
+        include: [
+          { model: Sheets, attributes: [] },
+          { model: Storages, attributes: [] },
+        ],
+
+        attributes: {
+          include: [
+            [sequelize.col("Sheet.pattern"), "pattern"],
+            [sequelize.col("Sheet.type"), "type"],
+            [sequelize.col("Sheet.width"), "width"],
+            [sequelize.col("Sheet.height"), "height"],
+            [sequelize.col("Storage.name"), "name"],
+            [sequelize.col("Storage.color_code"), "color"],
+          ],
+          exclude: ["createdAt", "updatedAt", "sheet", "storage"],
+          order: ["date", "DESC"],
+        },
+      });
+
+      res.status(200).json(stockList);
+    } catch (err) {
+      console.log(err);
+      return res.sendStatus(500);
+    }
+  },
+
   getStockBySheet: async (req, res) => {
     try {
       // let type = req.params.type;

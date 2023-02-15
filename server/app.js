@@ -9,6 +9,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cors());
 const stockRouter = require("./routes/stock");
+const sheetRouter = require("./routes/sheet");
 // const storageRouter = require("./routes/byStorage");
 
 db.sequelize
@@ -23,6 +24,9 @@ app.get("/", (req, res) => {
 });
 app.use("/stock", stockRouter);
 console.log(stockRouter);
+
+app.use("/sheet", sheetRouter);
+console.log(sheetRouter);
 
 app.listen(app.get("port"), () => {
   console.log("서버연결성공");

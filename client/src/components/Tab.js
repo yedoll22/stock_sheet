@@ -1,9 +1,11 @@
-import React from 'react'
+import { useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { PATHNAME, TAB } from '../static/constant'
+import Modal from './Modal'
 
 function Tab() {
   const { pathname } = useLocation()
+  const [isModalOpen, setIsModalOpen] = useState(false)
 
   const getTabStyle = (active) => {
     const basic = 'sm:inline-block pl-14 pr-14 pt-3 pb-3 block font-extrabold'
@@ -11,6 +13,10 @@ function Tab() {
       return `${basic} bg-[#074073] text-white`
     }
     return basic
+  }
+
+  const toggleModal = () => {
+    setIsModalOpen((prevState) => !prevState)
   }
 
   return (
@@ -30,8 +36,9 @@ function Tab() {
         </Link>
       </div>
       <div className="flex justify-center items-center ml-[20px] w-[64px] h-[64px] bg-[#D2D904] text-white text-5xl font-semibold rounded-full cursor-pointer">
-        <span>＋</span>
+        <span onClick={toggleModal}>＋</span>
       </div>
+      {isModalOpen && <Modal isOpen={isModalOpen} toggleModal={toggleModal} />}
     </nav>
   )
 }

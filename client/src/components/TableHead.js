@@ -7,8 +7,6 @@ function TableHead({ pathname }) {
 
   const checkPathname = (pathname) => {
     switch (pathname) {
-      // case PATHNAME.type:
-      //   return [type, pattern, standard, quantity, storage]
       case PATHNAME.storage:
         return [storage, pattern, standard, quantity, type]
       default:

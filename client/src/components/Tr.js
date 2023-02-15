@@ -7,8 +7,6 @@ function Tr({ pathname, rowContents }) {
 
   const checkPathname = (pathname) => {
     switch (pathname) {
-      // case PATHNAME.type:
-      //   return [type, pattern, standard, quantity, storage]
       case PATHNAME.storage:
         return [storage, pattern, standard, quantity, type]
       default:
@@ -16,7 +14,6 @@ function Tr({ pathname, rowContents }) {
     }
   }
 
-  // storage 배열 풀어야 됨
   return (
     <tr>
       {checkPathname(pathname).map((td, i) => (

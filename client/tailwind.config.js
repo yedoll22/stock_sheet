@@ -2,14 +2,18 @@
 module.exports = {
   content: ['./src/**/*.{html,js}'],
   theme: {
-    extend: {},
+    extend: {
+      colors: {
+        modalBg: 'rgba(0, 0, 0, 0.5)'
+      }
+    }
   },
   plugins: [
     {
       tailwindcss: {},
-      autoprefixer: {},
-    },
-  ],
+      autoprefixer: {}
+    }
+  ]
 }
 
 // 참고:

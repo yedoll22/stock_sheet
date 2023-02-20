@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { DROPDOWN_CONTENT } from '../static/constant'
 
 function Dropdown({
   outsideRef,
@@ -9,14 +10,15 @@ function Dropdown({
 }) {
   const [selected, setSelected] = useState('선택하세요.')
 
-  // 🐹 checkIsStockMove is not a function 에러 발생 => 해결해야 됨
   const selectOption = (data) => {
+    if (content.title === DROPDOWN_CONTENT.category.title) {
+      checkIsStockMove(data)
+    }
     setSelected(data)
-    checkIsStockMove(data)
   }
 
   return (
-    <div className="mb-7 flex item-center relative">
+    <div className="mb-4 flex item-center relative">
       <div className="font-bold mr-3">{content.title}</div>
       <div
         onClick={() => setIsOpen(!isOpen)}

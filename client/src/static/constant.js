@@ -31,6 +31,14 @@ const DROPDOWN_CONTENT = Object.freeze({
   category: {
     title: '구분',
     text: ['입고', '출고', '재고 이동', '실재고 체크', '불량']
+  },
+  storageFrom: {
+    title: '보관 위치',
+    text: ['1층 위', '1층 밑', '소부실 앞', '인쇄실']
+  },
+  storageTo: {
+    title: '이동 위치',
+    text: ['1층 위', '1층 밑', '소부실 앞', '인쇄실']
   }
 })
 

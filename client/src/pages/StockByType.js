@@ -37,7 +37,7 @@ function StockByType() {
   return (
     <>
       <Tab />
-      <div className="mb-3">
+      <div className="mb-7">
         <Dropdown
           outsideRef={outsideRef}
           setIsOpen={setIsOpen}

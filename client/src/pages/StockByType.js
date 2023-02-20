@@ -1,38 +1,26 @@
-import axios from 'axios'
-import { useRef, useEffect, useState } from 'react'
+// import axios from 'axios'
+import { useState, useCallback } from 'react'
 import Dropdown from '../components/Dropdown'
 import Tab from '../components/Tab'
 import Table from '../components/Table'
 import { DROPDOWN_CONTENT } from '../static/constant'
+import useOutSideRef from '../util/useOutSideRef'
 
 function StockByType() {
-  const outsideRef = useOutSideRef(null)
-  const [isOpen, setIsOpen] = useState(false)
-  const { REACT_APP_BASIC_URL } = process.env
+  const [outsideRef, isOpen, setIsOpen] = useOutSideRef(false)
+  const [selected, setSelected] = useState('선택하세요.')
 
-  useEffect(() => {
-    axios
-      .get(`${REACT_APP_BASIC_URL}/stock/storage`)
-      .then((res) => console.log(res))
-  }, [REACT_APP_BASIC_URL])
+  // const { REACT_APP_BASIC_URL } = process.env
 
-  function useOutSideRef() {
-    const ref = useRef(null)
+  // useEffect(() => {
+  //   axios
+  //     .get(`${REACT_APP_BASIC_URL}/stock/storage`)
+  //     .then((res) => console.log(res))
+  // }, [REACT_APP_BASIC_URL])
 
-    useEffect(() => {
-      function handleClickOutside(event) {
-        if (ref.current && !ref.current.contains(event.target)) {
-          setIsOpen(false)
-        }
-      }
-      document.addEventListener('click', handleClickOutside)
-      return () => {
-        document.removeEventListener('click', handleClickOutside)
-      }
-    })
-
-    return ref
-  }
+  const selectOption = useCallback((data) => {
+    setSelected(data)
+  }, [])
 
   return (
     <>
@@ -43,6 +31,8 @@ function StockByType() {
           setIsOpen={setIsOpen}
           isOpen={isOpen}
           content={DROPDOWN_CONTENT.type}
+          selected={selected}
+          selectOption={selectOption}
         />
       </div>
       <Table />

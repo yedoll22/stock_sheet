@@ -12,6 +12,15 @@ function Modal({ toggleModal }) {
     DROPDOWN_CONTENT
   const [isStockMove, setIsStockMove] = useState(false)
   const [date, setDate] = useState(today)
+  const [selected, setSelected] = useState({
+    category: '선택하세요.',
+    type: '선택하세요.',
+    pattern: '선택하세요.',
+    quantity: '선택하세요.',
+    storage: '선택하세요.',
+    storageFrom: '선택하세요.',
+    storageTo: '선택하세요.'
+  })
 
   const [categoryRef, isCategoryOpen, setIsCategoryOpen] = useOutSideRef(false)
   const [typeRef, isTypeOpen, setIsTypeOpen] = useOutSideRef(false)
@@ -28,19 +37,22 @@ function Modal({ toggleModal }) {
       outsideRef: typeRef,
       isOpen: isTypeOpen,
       setIsOpen: setIsTypeOpen,
-      content: type
+      content: type,
+      selected: selected.type
     },
     {
       outsideRef: patternRef,
       isOpen: isPatternOpen,
       setIsOpen: setIsPatternOpen,
-      content: pattern
+      content: pattern,
+      selected: selected.pattern
     },
     {
       outsideRef: quantityRef,
       isOpen: isQuantityOpen,
       setIsOpen: setIsQuantityOpen,
-      content: quantity
+      content: quantity,
+      selected: selected.quantity
     }
   ]
 
@@ -52,13 +64,15 @@ function Modal({ toggleModal }) {
           outsideRef: storageFromRef,
           isOpen: isStorageFromRef,
           setIsOpen: setIsStorageFromOpen,
-          content: storageFrom
+          content: storageFrom,
+          selected: selected.storageFrom
         },
         {
           outsideRef: storageToRef,
           isOpen: isStorageToRef,
           setIsOpen: setIsStorageToOpen,
-          content: storageTo
+          content: storageTo,
+          selected: selected.storageTo
         }
       ]
     : [
@@ -67,7 +81,8 @@ function Modal({ toggleModal }) {
           outsideRef: storageRef,
           isOpen: isStorageRef,
           setIsOpen: setIsStorageOpen,
-          content: storage
+          content: storage,
+          selected: selected.storage
         }
       ]
 
@@ -94,6 +109,26 @@ function Modal({ toggleModal }) {
     return setIsStockMove(false)
   }, [])
 
+  const selectOption = useCallback(
+    (data, key) => {
+      if (key === DROPDOWN_CONTENT.category.key) {
+        checkIsStockMove(data)
+        setSelected({
+          category: data,
+          type: '선택하세요.',
+          pattern: '선택하세요.',
+          quantity: '선택하세요.',
+          storage: '선택하세요.',
+          storageFrom: '선택하세요.',
+          storageTo: '선택하세요.'
+        })
+      } else {
+        setSelected((prev) => ({ ...prev, [key]: data }))
+      }
+    },
+    [checkIsStockMove]
+  )
+
   return (
     <div
       className="fixed inset-0 flex justify-center items-center z-10 bg-modalBg"
@@ -103,7 +138,6 @@ function Modal({ toggleModal }) {
         className="px-6 py-8 bg-white rounded-md min-w-[30rem]"
         onClick={handleClickModalView}
       >
-        {/* Dropdown이랑 margin 중첩돼있음 */}
         <div className="mb-10">
           <div className="mb-2">
             <span className="font-bold mr-3">일자</span>
@@ -120,6 +154,8 @@ function Modal({ toggleModal }) {
             setIsOpen={setIsCategoryOpen}
             content={category}
             checkIsStockMove={checkIsStockMove}
+            selected={selected.category}
+            selectOption={selectOption}
           />
         </div>
         <div
@@ -135,6 +171,8 @@ function Modal({ toggleModal }) {
               setIsOpen={obj.setIsOpen}
               content={obj.content}
               checkIsStockMove={checkIsStockMove}
+              selected={obj.selected}
+              selectOption={selectOption}
             />
           ))}
         </div>

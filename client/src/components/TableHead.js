@@ -1,23 +1,16 @@
-import React from 'react'
-import { PATHNAME, THEAD } from '../static/constant'
+import { useMemo } from 'react'
+import { THEAD } from '../static/constant'
+import changeByPathname from '../util/changeByPathname'
+
 import Th from './Th'
 
 function TableHead({ pathname }) {
-  const { type, pattern, standard, quantity, storage } = THEAD
-
-  const checkPathname = (pathname) => {
-    switch (pathname) {
-      case PATHNAME.storage:
-        return [storage, pattern, standard, quantity, type]
-      default:
-        return [type, pattern, standard, quantity, storage]
-    }
-  }
+  const content = useMemo(() => changeByPathname(pathname, THEAD), [pathname])
 
   return (
     <thead>
       <tr>
-        {checkPathname(pathname).map((th) => (
+        {content.map((th) => (
           <Th key={th} tableHeader={th} />
         ))}
       </tr>

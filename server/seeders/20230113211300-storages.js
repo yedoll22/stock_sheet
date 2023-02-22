@@ -26,19 +26,19 @@ module.exports = {
       "Storages",
       [
         {
-          name: "소부실앞",
+          name: "소부실 앞",
           color_code: "#FBE7E9",
           createdAt: new Date(),
           updatedAt: new Date(),
         },
         {
-          name: "1층밑",
+          name: "1층 밑",
           color_code: "#D4F8D3",
           createdAt: new Date(),
           updatedAt: new Date(),
         },
         {
-          name: "1층위",
+          name: "1층 위",
           color_code: "#EDE7FB",
           createdAt: new Date(),
           updatedAt: new Date(),

@@ -1,3 +1,5 @@
+import { memo } from 'react'
+
 function Dropdown({
   outsideRef,
   isOpen,
@@ -34,4 +36,4 @@ function Dropdown({
   )
 }
 
-export default Dropdown
+export default memo(Dropdown)

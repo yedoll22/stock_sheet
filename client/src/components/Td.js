@@ -1,4 +1,4 @@
-import React from 'react'
+import { memo } from 'react'
 
 function Td({ cellContents }) {
   return (
@@ -19,4 +19,4 @@ function Td({ cellContents }) {
   )
 }
 
-export default Td
+export default memo(Td)

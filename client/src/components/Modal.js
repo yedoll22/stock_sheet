@@ -2,14 +2,13 @@ import { useCallback, useState } from 'react'
 import { DROPDOWN_CONTENT } from '../static/constant'
 import useOutSideRef from '../util/useOutSideRef'
 import Dropdown from './Dropdown'
+import * as stockModalApi from '../api/stockModal'
 
 function Modal({ toggleModal }) {
   const today = `${new Date().getFullYear()}-${String(
     new Date().getMonth() + 1
   ).padStart(2, '0')}-${String(new Date().getDate()).padStart(2, '0')}`
 
-  const { category, type, pattern, quantity, storage, storageFrom, storageTo } =
-    DROPDOWN_CONTENT
   const [isStockMove, setIsStockMove] = useState(false)
   const [date, setDate] = useState(today)
   const [selected, setSelected] = useState({
@@ -21,6 +20,15 @@ function Modal({ toggleModal }) {
     storageFrom: '선택하세요.',
     storageTo: '선택하세요.'
   })
+  const {
+    category,
+    type,
+    pattern,
+    quantity: positiveQuantity,
+    storage,
+    storageFrom,
+    storageTo
+  } = selected
 
   const [categoryRef, isCategoryOpen, setIsCategoryOpen] = useOutSideRef(false)
   const [typeRef, isTypeOpen, setIsTypeOpen] = useOutSideRef(false)
@@ -37,22 +45,22 @@ function Modal({ toggleModal }) {
       outsideRef: typeRef,
       isOpen: isTypeOpen,
       setIsOpen: setIsTypeOpen,
-      content: type,
-      selected: selected.type
+      content: DROPDOWN_CONTENT.type,
+      selected: type
     },
     {
       outsideRef: patternRef,
       isOpen: isPatternOpen,
       setIsOpen: setIsPatternOpen,
-      content: pattern,
-      selected: selected.pattern
+      content: DROPDOWN_CONTENT.pattern,
+      selected: pattern
     },
     {
       outsideRef: quantityRef,
       isOpen: isQuantityOpen,
       setIsOpen: setIsQuantityOpen,
-      content: quantity,
-      selected: selected.quantity
+      content: DROPDOWN_CONTENT.quantity,
+      selected: positiveQuantity
     }
   ]
 
@@ -64,15 +72,15 @@ function Modal({ toggleModal }) {
           outsideRef: storageFromRef,
           isOpen: isStorageFromRef,
           setIsOpen: setIsStorageFromOpen,
-          content: storageFrom,
-          selected: selected.storageFrom
+          content: DROPDOWN_CONTENT.storageFrom,
+          selected: storageFrom
         },
         {
           outsideRef: storageToRef,
           isOpen: isStorageToRef,
           setIsOpen: setIsStorageToOpen,
-          content: storageTo,
-          selected: selected.storageTo
+          content: DROPDOWN_CONTENT.storageTo,
+          selected: storageTo
         }
       ]
     : [
@@ -81,8 +89,8 @@ function Modal({ toggleModal }) {
           outsideRef: storageRef,
           isOpen: isStorageRef,
           setIsOpen: setIsStorageOpen,
-          content: storage,
-          selected: selected.storage
+          content: DROPDOWN_CONTENT.storage,
+          selected: storage
         }
       ]
 
@@ -129,6 +137,22 @@ function Modal({ toggleModal }) {
     [checkIsStockMove]
   )
 
+  const handleSubmitStockModal = (selectedCategory) => {
+    const storageName = storage
+    const quantity =
+      selectedCategory === '출고' ? positiveQuantity * -1 : positiveQuantity
+
+    // 하나라도 드롭다운을 지정하지 않고 저장하기를 눌렀을 때 에러메시지 띄워줘야 함
+    // 출고 일 때는, 기존 수량을 체크하는 로직을 선행해야 함 (마이너스 수량이 되지 않도록)
+    if (selectedCategory === '입고' || selectedCategory === '출고') {
+      stockModalApi
+        .stockIn(date, category, type, pattern, quantity, storageName)
+        .then((res) => console.log(res))
+        .then(() => toggleModal())
+        .then((err) => console.error(err))
+    }
+  }
+
   return (
     <div
       className="fixed inset-0 flex justify-center items-center z-10 bg-modalBg"
@@ -152,9 +176,9 @@ function Modal({ toggleModal }) {
             outsideRef={categoryRef}
             isOpen={isCategoryOpen}
             setIsOpen={setIsCategoryOpen}
-            content={category}
+            content={DROPDOWN_CONTENT.category}
             checkIsStockMove={checkIsStockMove}
-            selected={selected.category}
+            selected={category}
             selectOption={selectOption}
           />
         </div>
@@ -177,7 +201,10 @@ function Modal({ toggleModal }) {
           ))}
         </div>
         <div className="flex justify-center mt-4">
-          <button className="mx-2 px-6 py-1 rounded-md bg-[#074073] text-white font-semibold">
+          <button
+            className="mx-2 px-6 py-1 rounded-md bg-[#074073] text-white font-semibold"
+            onClick={() => handleSubmitStockModal(category)}
+          >
             저장하기
           </button>
           <button

@@ -1,22 +1,22 @@
-// import axios from 'axios'
-import { useState, useCallback } from 'react'
+import { useState, useCallback, useEffect } from 'react'
+import { DROPDOWN_CONTENT } from '../static/constant'
+import useOutSideRef from '../util/useOutSideRef'
+import * as stockPagesApi from '../api/stockPages'
+
 import Dropdown from '../components/Dropdown'
 import Tab from '../components/Tab'
 import Table from '../components/Table'
-import { DROPDOWN_CONTENT } from '../static/constant'
-import useOutSideRef from '../util/useOutSideRef'
 
 function StockByType() {
   const [outsideRef, isOpen, setIsOpen] = useOutSideRef(false)
   const [selected, setSelected] = useState('선택하세요.')
 
-  // const { REACT_APP_BASIC_URL } = process.env
-
-  // useEffect(() => {
-  //   axios
-  //     .get(`${REACT_APP_BASIC_URL}/stock/storage`)
-  //     .then((res) => console.log(res))
-  // }, [REACT_APP_BASIC_URL])
+  useEffect(() => {
+    stockPagesApi
+      .getAllStock('sheet')
+      .then((res) => console.log(res.data))
+      .catch((err) => console.error(err))
+  }, [])
 
   const selectOption = useCallback((data) => {
     setSelected(data)

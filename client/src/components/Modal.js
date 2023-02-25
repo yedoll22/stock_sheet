@@ -1,5 +1,5 @@
 import { useCallback, useState } from 'react'
-import { DROPDOWN_CONTENT } from '../static/constant'
+import { MODAL_DROPDOWN_CONTENT } from '../static/constant'
 import useOutSideRef from '../util/useOutSideRef'
 import Dropdown from './Dropdown'
 import * as stockModalApi from '../api/stockModal'
@@ -45,21 +45,21 @@ function Modal({ toggleModal }) {
       outsideRef: typeRef,
       isOpen: isTypeOpen,
       setIsOpen: setIsTypeOpen,
-      content: DROPDOWN_CONTENT.type,
+      content: MODAL_DROPDOWN_CONTENT.type,
       selected: type
     },
     {
       outsideRef: patternRef,
       isOpen: isPatternOpen,
       setIsOpen: setIsPatternOpen,
-      content: DROPDOWN_CONTENT.pattern,
+      content: MODAL_DROPDOWN_CONTENT.pattern,
       selected: pattern
     },
     {
       outsideRef: quantityRef,
       isOpen: isQuantityOpen,
       setIsOpen: setIsQuantityOpen,
-      content: DROPDOWN_CONTENT.quantity,
+      content: MODAL_DROPDOWN_CONTENT.quantity,
       selected: positiveQuantity
     }
   ]
@@ -72,14 +72,14 @@ function Modal({ toggleModal }) {
           outsideRef: storageFromRef,
           isOpen: isStorageFromRef,
           setIsOpen: setIsStorageFromOpen,
-          content: DROPDOWN_CONTENT.storageFrom,
+          content: MODAL_DROPDOWN_CONTENT.storageFrom,
           selected: storageFrom
         },
         {
           outsideRef: storageToRef,
           isOpen: isStorageToRef,
           setIsOpen: setIsStorageToOpen,
-          content: DROPDOWN_CONTENT.storageTo,
+          content: MODAL_DROPDOWN_CONTENT.storageTo,
           selected: storageTo
         }
       ]
@@ -89,7 +89,7 @@ function Modal({ toggleModal }) {
           outsideRef: storageRef,
           isOpen: isStorageRef,
           setIsOpen: setIsStorageOpen,
-          content: DROPDOWN_CONTENT.storage,
+          content: MODAL_DROPDOWN_CONTENT.storage,
           selected: storage
         }
       ]
@@ -119,7 +119,7 @@ function Modal({ toggleModal }) {
 
   const selectOption = useCallback(
     (data, key) => {
-      if (key === DROPDOWN_CONTENT.category.key) {
+      if (key === MODAL_DROPDOWN_CONTENT.category.key) {
         checkIsStockMove(data)
         setSelected({
           category: data,
@@ -176,7 +176,7 @@ function Modal({ toggleModal }) {
             outsideRef={categoryRef}
             isOpen={isCategoryOpen}
             setIsOpen={setIsCategoryOpen}
-            content={DROPDOWN_CONTENT.category}
+            content={MODAL_DROPDOWN_CONTENT.category}
             checkIsStockMove={checkIsStockMove}
             selected={category}
             selectOption={selectOption}

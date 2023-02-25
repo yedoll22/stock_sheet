@@ -1,10 +1,10 @@
 import { useMemo } from 'react'
-import changeByPathname from '../util/changeByPathname'
+import changeByTableByPathname from '../util/changeByTableByPathname'
 import Td from './Td'
 
 function Tr({ pathname, rowContents }) {
   const content = useMemo(
-    () => changeByPathname(pathname, rowContents),
+    () => changeByTableByPathname(pathname, rowContents),
     [pathname, rowContents]
   )
 

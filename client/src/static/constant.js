@@ -81,11 +81,18 @@ const MODAL_DROPDOWN_CONTENT = Object.freeze({
   }
 })
 
+const ERROR_MSG = Object.freeze({
+  dropdown: '모든 옵션을 선택 및 지정 해주세요.',
+  positiveQuantity: '출고 시, 수량은 음수(-)로 입력해주세요',
+  negativeQuantity: '출고가 아닐 시, 수량은 양수(+)로 입력해주세요.'
+})
+
 export {
   PATHNAME,
   TAB,
   THEAD,
   STORAGE_INFO,
   PAGE_DROPDOWN_CONTENT,
-  MODAL_DROPDOWN_CONTENT
+  MODAL_DROPDOWN_CONTENT,
+  ERROR_MSG
 }

@@ -1,11 +1,14 @@
 import { useMemo } from 'react'
 import { THEAD } from '../static/constant'
-import changeByPathname from '../util/changeByPathname'
+import changeByTableByPathname from '../util/changeByTableByPathname'
 
 import Th from './Th'
 
 function TableHead({ pathname }) {
-  const content = useMemo(() => changeByPathname(pathname, THEAD), [pathname])
+  const content = useMemo(
+    () => changeByTableByPathname(pathname, THEAD),
+    [pathname]
+  )
 
   return (
     <thead>

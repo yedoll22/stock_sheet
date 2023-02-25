@@ -1,154 +1,181 @@
 import { useCallback, useState } from 'react'
-import { MODAL_DROPDOWN_CONTENT } from '../static/constant'
+import { ERROR_MSG, MODAL_DROPDOWN_CONTENT } from '../static/constant'
 import useOutSideRef from '../util/useOutSideRef'
-import Dropdown from './Dropdown'
 import * as stockModalApi from '../api/stockModal'
 
-function Modal({ toggleModal }) {
+import ModalUpperContents from './ModalUpperContents'
+import ModalCommonContents from './ModalCommonContents'
+import ModalStorageContents from './ModalStorageContents'
+import ModalButtons from './ModalButtons'
+
+function Modal({ handleToggle }) {
   const today = `${new Date().getFullYear()}-${String(
     new Date().getMonth() + 1
   ).padStart(2, '0')}-${String(new Date().getDate()).padStart(2, '0')}`
 
-  const [isStockMove, setIsStockMove] = useState(false)
-  const [date, setDate] = useState(today)
   const [selected, setSelected] = useState({
     category: '선택하세요.',
     type: '선택하세요.',
     pattern: '선택하세요.',
-    quantity: '선택하세요.',
     storage: '선택하세요.',
     storageFrom: '선택하세요.',
     storageTo: '선택하세요.'
   })
-  const {
-    category,
-    type,
-    pattern,
-    quantity: positiveQuantity,
-    storage,
-    storageFrom,
-    storageTo
-  } = selected
+  const { category, type, pattern, storage, storageFrom, storageTo } = selected
 
-  const [categoryRef, isCategoryOpen, setIsCategoryOpen] = useOutSideRef(false)
+  const [date, setDate] = useState(today)
+  const [quantity, setQuantity] = useState(0)
+  const [isStockMoveSelected, setIsStockMoveSelected] = useState(false)
+  const [errorMsg, setErrorMsg] = useState(null)
+
+  const [, isCategoryOpen, setIsCategoryOpen] = useOutSideRef(false)
   const [typeRef, isTypeOpen, setIsTypeOpen] = useOutSideRef(false)
   const [patternRef, isPatternOpen, setIsPatternOpen] = useOutSideRef(false)
-  const [quantityRef, isQuantityOpen, setIsQuantityOpen] = useOutSideRef(false)
-  const [storageRef, isStorageRef, setIsStorageOpen] = useOutSideRef(false)
-  const [storageFromRef, isStorageFromRef, setIsStorageFromOpen] =
+  const [storageRef, isStorageOpen, setIsStorageOpen] = useOutSideRef(false)
+  const [storageFromRef, isStorageFromOpen, setIsStorageFromOpen] =
     useOutSideRef(false)
-  const [storageToRef, isStorageToRef, setIsStorageToOpen] =
+  const [storageToRef, isStorageToOpen, setIsStorageToOpen] =
     useOutSideRef(false)
 
-  const dropdownCommonMapping = [
+  const commonDropdownMappings = [
     {
-      outsideRef: typeRef,
+      outSideRef: typeRef,
+      selected: type,
       isOpen: isTypeOpen,
       setIsOpen: setIsTypeOpen,
-      content: MODAL_DROPDOWN_CONTENT.type,
-      selected: type
+      content: MODAL_DROPDOWN_CONTENT.type
     },
     {
-      outsideRef: patternRef,
+      outSideRef: patternRef,
+      selected: pattern,
       isOpen: isPatternOpen,
       setIsOpen: setIsPatternOpen,
-      content: MODAL_DROPDOWN_CONTENT.pattern,
-      selected: pattern
-    },
-    {
-      outsideRef: quantityRef,
-      isOpen: isQuantityOpen,
-      setIsOpen: setIsQuantityOpen,
-      content: MODAL_DROPDOWN_CONTENT.quantity,
-      selected: positiveQuantity
+      content: MODAL_DROPDOWN_CONTENT.pattern
     }
   ]
 
-  // 구분(category) 제외 (map으로 돌리지 않고 따로 배치)
-  const dropdownMapping = isStockMove
+  const storageDropdownMappings = isStockMoveSelected
     ? [
-        ...dropdownCommonMapping,
         {
-          outsideRef: storageFromRef,
-          isOpen: isStorageFromRef,
+          outSideRef: storageFromRef,
+          selected: storageFrom,
+          isOpen: isStorageFromOpen,
           setIsOpen: setIsStorageFromOpen,
-          content: MODAL_DROPDOWN_CONTENT.storageFrom,
-          selected: storageFrom
+          content: MODAL_DROPDOWN_CONTENT.storageFrom
         },
         {
-          outsideRef: storageToRef,
-          isOpen: isStorageToRef,
+          outSideRef: storageToRef,
+          selected: storageTo,
+          isOpen: isStorageToOpen,
           setIsOpen: setIsStorageToOpen,
-          content: MODAL_DROPDOWN_CONTENT.storageTo,
-          selected: storageTo
+          content: MODAL_DROPDOWN_CONTENT.storageTo
         }
       ]
     : [
-        ...dropdownCommonMapping,
         {
-          outsideRef: storageRef,
-          isOpen: isStorageRef,
+          outSideRef: storageRef,
+          selected: storage,
+          isOpen: isStorageOpen,
           setIsOpen: setIsStorageOpen,
-          content: MODAL_DROPDOWN_CONTENT.storage,
-          selected: storage
+          content: MODAL_DROPDOWN_CONTENT.storage
         }
       ]
 
-  const handleClickModalView = (e) => {
-    e.stopPropagation()
-    for (let i = 0; i < dropdownMapping.length; i++) {
-      if (dropdownMapping[i].isOpen) {
-        dropdownMapping[i].setIsOpen(false)
-      } else if (isCategoryOpen) {
-        setIsCategoryOpen(false)
-      }
+  const handleClickModalView = () => {
+    if (isCategoryOpen) {
+      setIsCategoryOpen(false)
+    } else if (isTypeOpen) {
+      setIsTypeOpen(false)
+    } else if (isPatternOpen) {
+      setIsPatternOpen(false)
+    } else if (isStorageOpen) {
+      setIsStorageOpen(false)
+    } else if (isStorageFromOpen) {
+      setIsStorageFromOpen(false)
+    } else if (isStorageToOpen) {
+      setIsStorageToOpen(false)
     }
   }
 
   const handleChangeDate = (e) => {
     setDate(e.target.value)
   }
+  const handleChangeQuantity = (e) => {
+    setQuantity(e.target.value)
+  }
 
-  const checkIsStockMove = useCallback((data) => {
-    // 🐹 setter 함수에 의한 상태 변화 반영 속도 고려 => 추후 필요 시, 동기처리 할 것
-    if (data === '재고 이동') {
-      return setIsStockMove(true)
+  const checkIsStockMoveSelected = useCallback((selected) => {
+    if (selected === '재고 이동') {
+      return setIsStockMoveSelected(true)
     }
-    return setIsStockMove(false)
+    return setIsStockMoveSelected(false)
   }, [])
 
   const selectOption = useCallback(
     (data, key) => {
       if (key === MODAL_DROPDOWN_CONTENT.category.key) {
-        checkIsStockMove(data)
+        checkIsStockMoveSelected(data)
         setSelected({
           category: data,
           type: '선택하세요.',
           pattern: '선택하세요.',
-          quantity: '선택하세요.',
           storage: '선택하세요.',
           storageFrom: '선택하세요.',
           storageTo: '선택하세요.'
         })
+        setQuantity(0)
+        setErrorMsg(null)
       } else {
         setSelected((prev) => ({ ...prev, [key]: data }))
       }
     },
-    [checkIsStockMove]
+    [checkIsStockMoveSelected]
   )
 
-  const handleSubmitStockModal = (selectedCategory) => {
-    const storageName = storage
-    const quantity =
-      selectedCategory === '출고' ? positiveQuantity * -1 : positiveQuantity
+  const hasDropdownError = (selectedCategory) => {
+    const copyedSelected = selected
+    if (selectedCategory === '재고 이동') {
+      delete copyedSelected.storage
+    } else {
+      delete copyedSelected.storageFrom
+      delete copyedSelected.storageTo
+    }
+    for (const props in copyedSelected) {
+      if (selected[props] === '선택하세요.') {
+        setErrorMsg(ERROR_MSG.dropdown)
+        return true
+      }
+    }
+    return false
+  }
 
-    // 하나라도 드롭다운을 지정하지 않고 저장하기를 눌렀을 때 에러메시지 띄워줘야 함
-    // 출고 일 때는, 기존 수량을 체크하는 로직을 선행해야 함 (마이너스 수량이 되지 않도록)
+  const hasQuantityError = (selectedCategory) => {
+    let hasError = false
+    if (selectedCategory === '출고' && quantity > 0) {
+      setErrorMsg(ERROR_MSG.positiveQuantity)
+      hasError = true
+    }
+    if (selectedCategory !== '출고' && quantity < 0) {
+      setErrorMsg(ERROR_MSG.negativeQuantity)
+      hasError = true
+    }
+    return hasError
+  }
+
+  const handleSubmitModal = (selectedCategory) => {
+    const storageName = storage
+    // submit 전에 체크 할 것
+    // 출고 / 재고이동은 기존 수량을 체크하는 로직 필요 (마이너스 수량이 되지 않도록)
+    if (hasDropdownError(selectedCategory)) return
+    if (hasQuantityError(selectedCategory)) return
+
+    // submit 한 뒤 화면상에서 실시간 state 업데이트가 안됨
+    // => then chaining에서 setter 함수로 state 업데이트 해줘야됨
+    // tableContents 배열 state, setter 함수를 가져와야 됨....ㅠㅠ
     if (selectedCategory === '입고' || selectedCategory === '출고') {
       stockModalApi
         .stockIn(date, category, type, pattern, quantity, storageName)
-        .then((res) => console.log(res))
-        .then(() => toggleModal())
+        .then(() => handleToggle())
         .then((err) => console.error(err))
     }
   }
@@ -156,64 +183,42 @@ function Modal({ toggleModal }) {
   return (
     <div
       className="fixed inset-0 flex justify-center items-center z-10 bg-modalBg"
-      onClick={toggleModal}
+      onClick={handleToggle}
     >
       <div
         className="px-6 py-8 bg-white rounded-md min-w-[30rem]"
         onClick={handleClickModalView}
       >
-        <div className="mb-10">
-          <div className="mb-2">
-            <span className="font-bold mr-3">일자</span>
-            <input
-              className="border border-[#D5DBE2] rounded h-7 min-w-[8rem] pl-3 py-1"
-              type="date"
-              value={date}
-              onChange={handleChangeDate}
-            />
-          </div>
-          <Dropdown
-            outsideRef={categoryRef}
-            isOpen={isCategoryOpen}
-            setIsOpen={setIsCategoryOpen}
-            content={MODAL_DROPDOWN_CONTENT.category}
-            checkIsStockMove={checkIsStockMove}
-            selected={category}
+        <ModalUpperContents
+          inputValue={date}
+          handleChangeInput={handleChangeDate}
+          isOpen={isCategoryOpen}
+          setIsOpen={setIsCategoryOpen}
+          selected={category}
+          selectOption={selectOption}
+        />
+        <div
+          className={`grid grid-cols-2 ${
+            isStockMoveSelected ? 'md:grid-cols-3' : 'md:grid-cols-4'
+          } md:gap-4 place-items-center`}
+        >
+          <ModalCommonContents
+            inputValue={quantity}
+            handleChangeInput={handleChangeQuantity}
+            dropdownMappings={commonDropdownMappings}
+            selectOption={selectOption}
+          />
+          <ModalStorageContents
+            dropdownMappings={storageDropdownMappings}
             selectOption={selectOption}
           />
         </div>
-        <div
-          className={`grid grid-cols-2 ${
-            isStockMove ? 'md:grid-cols-3' : 'md:grid-cols-4'
-          } md:gap-4 place-items-center`}
-        >
-          {dropdownMapping.map((obj, i) => (
-            <Dropdown
-              key={i}
-              outsideRef={obj.outsideRef}
-              isOpen={obj.isOpen}
-              setIsOpen={obj.setIsOpen}
-              content={obj.content}
-              checkIsStockMove={checkIsStockMove}
-              selected={obj.selected}
-              selectOption={selectOption}
-            />
-          ))}
-        </div>
-        <div className="flex justify-center mt-4">
-          <button
-            className="mx-2 px-6 py-1 rounded-md bg-[#074073] text-white font-semibold"
-            onClick={() => handleSubmitStockModal(category)}
-          >
-            저장하기
-          </button>
-          <button
-            className="mx-2 px-6 py-1 border rounded-md font-semibold"
-            onClick={toggleModal}
-          >
-            취소하기
-          </button>
-        </div>
+        <div className="text-center text-red-600">{errorMsg}</div>
+        <ModalButtons
+          category={category}
+          handleSubmit={handleSubmitModal}
+          handleToggle={handleToggle}
+        />
       </div>
     </div>
   )

@@ -1,4 +1,3 @@
-import React from 'react'
 import Tr from './Tr'
 
 function TableBody({ pathname, tableContents }) {

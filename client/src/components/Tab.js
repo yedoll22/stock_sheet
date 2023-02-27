@@ -16,9 +16,7 @@ function Tab() {
     return basic
   }
 
-  const handleToggleModal = (e) => {
-    const { target, currentTarget } = e
-    if (target !== currentTarget) return
+  const handleToggleModal = () => {
     setIsModalOpen((prevState) => !prevState)
   }
 
@@ -41,9 +39,7 @@ function Tab() {
       <div className="flex justify-center items-center ml-[20px] w-[64px] h-[64px] bg-[#D2D904] text-white text-5xl font-semibold rounded-full cursor-pointer">
         <span onClick={handleToggleModal}>＋</span>
       </div>
-      {isModalOpen && (
-        <Modal isOpen={isModalOpen} handleToggle={handleToggleModal} />
-      )}
+      {isModalOpen && <Modal handleToggle={handleToggleModal} />}
     </nav>
   )
 }

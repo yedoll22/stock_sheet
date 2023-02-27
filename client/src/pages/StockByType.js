@@ -2,6 +2,7 @@ import { useState, useCallback, useEffect } from 'react'
 import { PAGE_DROPDOWN_CONTENT } from '../static/constant'
 import useOutSideRef from '../util/useOutSideRef'
 import * as stockPagesApi from '../api/stockPages'
+import addThousandsCommaInTableData from '../util/addThousandsCommaInTableData'
 
 import Dropdown from '../components/Dropdown'
 import Tab from '../components/Tab'
@@ -15,7 +16,10 @@ function StockByType() {
   useEffect(() => {
     stockPagesApi
       .getStockOnPage('sheet', selected)
-      .then((res) => setTableContents(res.data))
+      .then((res) => {
+        const tableData = addThousandsCommaInTableData(res.data)
+        setTableContents(tableData)
+      })
       .catch((err) => console.error(err))
   }, [selected])
 

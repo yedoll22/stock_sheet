@@ -24,7 +24,7 @@ function Modal({ handleToggle }) {
   const { category, type, pattern, storage, storageFrom, storageTo } = selected
 
   const [date, setDate] = useState(today)
-  const [quantity, setQuantity] = useState(0)
+  const [quantityStr, setQuantityStr] = useState('')
   const [isStockMoveSelected, setIsStockMoveSelected] = useState(false)
   const [errorMsg, setErrorMsg] = useState(null)
 
@@ -81,7 +81,11 @@ function Modal({ handleToggle }) {
         }
       ]
 
-  const handleClickModalView = () => {
+  const handleClickModalView = (e) => {
+    // const { target, currentTarget } = e
+    // if (target !== currentTarget) return
+    e.stopPropagation()
+
     if (isCategoryOpen) {
       setIsCategoryOpen(false)
     } else if (isTypeOpen) {
@@ -101,7 +105,10 @@ function Modal({ handleToggle }) {
     setDate(e.target.value)
   }
   const handleChangeQuantity = (e) => {
-    setQuantity(e.target.value)
+    const { value } = e.target
+    const removedCommaValue = Number(value.replaceAll(',', ''))
+    if (isNaN(removedCommaValue)) return
+    setQuantityStr(removedCommaValue.toLocaleString())
   }
 
   const checkIsStockMoveSelected = useCallback((selected) => {
@@ -123,7 +130,7 @@ function Modal({ handleToggle }) {
           storageFrom: '선택하세요.',
           storageTo: '선택하세요.'
         })
-        setQuantity(0)
+        setQuantityStr('')
         setErrorMsg(null)
       } else {
         setSelected((prev) => ({ ...prev, [key]: data }))
@@ -149,13 +156,13 @@ function Modal({ handleToggle }) {
     return false
   }
 
-  const hasQuantityError = (selectedCategory) => {
+  const hasQuantityError = (selectedCategory, quantityNum) => {
     let hasError = false
-    if (selectedCategory === '출고' && quantity > 0) {
+    if (selectedCategory === '출고' && quantityNum > 0) {
       setErrorMsg(ERROR_MSG.positiveQuantity)
       hasError = true
     }
-    if (selectedCategory !== '출고' && quantity < 0) {
+    if (selectedCategory !== '출고' && quantityNum < 0) {
       setErrorMsg(ERROR_MSG.negativeQuantity)
       hasError = true
     }
@@ -164,10 +171,11 @@ function Modal({ handleToggle }) {
 
   const handleSubmitModal = (selectedCategory) => {
     const storageName = storage
+    const quantity = Number(quantityStr.replaceAll(',', ''))
     // submit 전에 체크 할 것
     // 출고 / 재고이동은 기존 수량을 체크하는 로직 필요 (마이너스 수량이 되지 않도록)
     if (hasDropdownError(selectedCategory)) return
-    if (hasQuantityError(selectedCategory)) return
+    if (hasQuantityError(selectedCategory, quantity)) return
 
     // submit 한 뒤 화면상에서 실시간 state 업데이트가 안됨
     // => then chaining에서 setter 함수로 state 업데이트 해줘야됨
@@ -203,7 +211,7 @@ function Modal({ handleToggle }) {
           } md:gap-4 place-items-center`}
         >
           <ModalCommonContents
-            inputValue={quantity}
+            inputValue={quantityStr}
             handleChangeInput={handleChangeQuantity}
             dropdownMappings={commonDropdownMappings}
             selectOption={selectOption}

@@ -7,8 +7,6 @@ router.post("/", stockController.post);
 router.get("/", stockController.get);
 router.get("/sheet", stockController.getStockBySheet);
 router.get("/storage", stockController.getStockByStorage);
-router.get("/sheet/:sheet", stockController.getStockBySheetId);
-router.get("/type/:type", stockController.getStockBySheetType);
 router.get("/storage/:storage", stockController.getStockByStorageId);
 
 router.delete("/", stockController.delete);

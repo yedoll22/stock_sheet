@@ -32,11 +32,32 @@ module.exports = {
 
   getStockBySheet: async (req, res) => {
     try {
-      // let type = req.params.type;
+      let sheetObj = [];
+      let sheetArr = [];
+      if (req.query.type) {
+        if (req.query.pattern) {
+          sheetObj = await Sheets.findAll({
+            attributes: ["id"],
+            where: { type: req.query.type, pattern: req.query.pattern },
+          });
+        } else {
+          sheetObj = await Sheets.findAll({
+            attributes: ["id"],
+            where: { type: req.query.type },
+          });
+        }
+      } else {
+        sheetObj = await Sheets.findAll({
+          attributes: ["id"],
+        });
+      }
 
-      const total = [sequelize.fn("sum", sequelize.col("quantity")), "total"];
+      for (key in sheetObj) {
+        sheetArr.push(sheetObj[key].id);
+      }
+
       const stockList = await Stocks.findAll({
-        include: [{ model: Sheets, attributes: [] }],
+        include: [{ model: Sheets, attributes: [], where: { id: sheetArr } }],
 
         attributes: {
           include: [
@@ -160,95 +181,6 @@ module.exports = {
     }
   },
 
-  getStockBySheetType: async (req, res) => {
-    try {
-      let type = req.params.type;
-
-      const stockList = await Stocks.findAll({
-        include: [
-          { model: Sheets, attributes: [], where: { type: type } },
-          // { model: Storages, attributes: [] },
-        ],
-
-        attributes: {
-          include: [
-            [sequelize.col("Sheet.pattern"), "pattern"],
-            [sequelize.col("Sheet.type"), "type"],
-            [sequelize.col("Sheet.width"), "width"],
-            [sequelize.col("Sheet.height"), "height"],
-            [sequelize.fn("sum", sequelize.col("quantity")), "total"],
-          ],
-          exclude: [
-            "date",
-            "category",
-            "quantity",
-            "createdAt",
-            "updatedAt",
-            "sheet",
-            "storage",
-            "id",
-          ],
-        },
-
-        group: ["sheet"],
-      });
-      res.status(200).json(stockList);
-    } catch (err) {
-      console.log(err);
-      return res.sendStatus(500);
-    }
-  },
-
-  getStockBySheetId: async (req, res) => {
-    try {
-      let sheet = req.params.sheet;
-      const sheetArr = sheet.split("_");
-
-      const id = await Sheets.findOne({
-        attributes: ["id"],
-        where: {
-          type: sheetArr[0],
-          pattern: sheetArr[1],
-        },
-      });
-
-      const stockList = await Stocks.findAll({
-        include: [
-          { model: Sheets, attributes: [] },
-          { model: Storages, attributes: [] },
-        ],
-
-        attributes: {
-          include: [
-            [sequelize.col("Sheet.pattern"), "pattern"],
-            [sequelize.col("Sheet.type"), "type"],
-            [sequelize.col("Sheet.width"), "width"],
-            [sequelize.col("Sheet.height"), "height"],
-            [sequelize.fn("sum", sequelize.col("quantity")), "total"],
-          ],
-          exclude: [
-            "date",
-            "category",
-            "quantity",
-            "createdAt",
-            "updatedAt",
-            "sheet",
-            "storage",
-            "id",
-          ],
-        },
-
-        group: ["sheet"],
-        where: { sheet: id.id },
-      });
-
-      res.status(200).json(stockList);
-    } catch (err) {
-      console.log(err);
-      return res.sendStatus(500);
-    }
-  },
-
   post: async (req, res) => {
     try {
       const {
@@ -313,181 +245,4 @@ module.exports = {
     });
     res.sendStatus(200);
   },
-  // get: async (req, res) => {
-  //   try {
-  //     const stockList = await Stocks.findAll({
-  //       include: [
-  //         {
-  //           model: Ins,
-  //           include: [
-  //             { model: Storages, attributes: ["name", "color_code"] },
-  //             {
-  //               model: Sheets,
-  //               attributes: ["pattern", "type", "width", "height"],
-  //             },
-  //           ],
-  //         },
-  //         {
-  //           model: Outs,
-  //           include: [
-  //             { model: Storages, attributes: ["name", "color_code"] },
-  //             {
-  //               model: Sheets,
-  //               attributes: ["pattern", "type", "width", "height"],
-  //             },
-  //           ],
-  //         },
-  //         {
-  //           model: Moves,
-  //           include: [
-  //             { model: Storages, attributes: ["name", "color_code"] },
-  //             {
-  //               model: Sheets,
-  //               attributes: ["pattern", "type", "width", "height"],
-  //             },
-  //           ],
-  //         },
-  //       ],
-  //     });
-
-  //     res.status(200).json(stockList);
-  //   } catch (err) {
-  //     console.log(err);
-  //     return res.sendStatus(500);
-  //   }
-  // },
-
-  // postIn: async (req, res) => {
-  //   try {
-  //     const { date, quantity, pattern, type, storages_id, category } = req.body;
-  //     const sheets_id = pattern + "_" + type;
-  //     const stocks_id = pattern + "_" + type + "_" + storages_id;
-  //     let panding;
-
-  //     if (category === "발주") {
-  //       panding = "Y";
-  //     } else {
-  //       panding = "N";
-  //     }
-
-  //     const preQuantity = (await Stocks.findOne({
-  //       where: { id: stocks_id },
-  //     })) || { quantity: 0 };
-
-  //     const [id, created] = await Stocks.upsert({
-  //       id: stocks_id,
-  //       quantity: preQuantity.quantity + quantity,
-  //     });
-
-  //     // if (category === "입고")
-  //     await Ins.create({
-  //       date,
-  //       quantity,
-  //       sheets_id,
-  //       storages_id,
-  //       category,
-  //       panding,
-  //       stocks_id,
-  //     });
-
-  //     return res.sendStatus(201);
-  //   } catch (err) {
-  //     console.log(err);
-  //     return res.sendStatus(500);
-  //   }
-  // },
-
-  // postOut: async (req, res) => {
-  //   try {
-  //     const { date, quantity, pattern, type, storages_id, category } = req.body;
-  //     const sheets_id = pattern + "_" + type;
-  //     const stocks_id = pattern + "_" + type + "_" + storages_id;
-
-  //     const preQuantity = (await Stocks.findOne({
-  //       where: { id: stocks_id },
-  //     })) || { quantity: 0 };
-
-  //     const [id, created] = await Stocks.upsert({
-  //       id: stocks_id,
-  //       quantity: preQuantity.quantity - quantity,
-  //     });
-
-  //     await Outs.create({
-  //       date,
-  //       quantity,
-  //       sheets_id,
-  //       storages_id,
-  //       category,
-  //       stocks_id,
-  //     });
-
-  //     return res.sendStatus(201);
-  //   } catch (err) {
-  //     console.log(err);
-  //     return res.sendStatus(500);
-  //   }
-  // },
-
-  // postMove: async (req, res) => {
-  //   try {
-  //     const { date, quantity, pattern, type, newStorages_id, oldStorages_id } =
-  //       req.body;
-  //     const sheets_id = pattern + "_" + type;
-  //     const oldStocks_id = sheets_id + "_" + oldStorages_id;
-  //     const newStocks_id = sheets_id + "_" + newStorages_id;
-
-  //     const preOld = (await Stocks.findOne({
-  //       where: { id: oldStocks_id },
-  //     })) || { quantity: 0 };
-
-  //     const preNew = (await Stocks.findOne({
-  //       where: { id: newStocks_id },
-  //     })) || { quantity: 0 };
-
-  //     await Stocks.bulkCreate(
-  //       [
-  //         {
-  //           id: oldStocks_id,
-  //           quantity: preOld.quantity - quantity,
-  //         },
-  //         {
-  //           id: newStocks_id,
-  //           quantity: preNew.quantity + quantity,
-  //         },
-  //       ],
-  //       {
-  //         updateOnDuplicate: ["quantity"],
-  //       }
-  //     );
-
-  //     await Moves.create({
-  //       date,
-  //       quantity,
-  //       sheets_id,
-  //       newStorages_id,
-  //       oldStorages_id,
-  //       oldStocks_id,
-  //       newStocks_id,
-  //     });
-
-  //     return res.sendStatus(201);
-  //   } catch (err) {
-  //     console.log(err);
-  //     return res.sendStatus(500);
-  //   }
-  // },
-
-  // delete: async (req, res) => {
-  //   await Ins.destroy({
-  //     where: {},
-  //     truncate: true,
-  //   });
-  //   res.sendStatus(200);
-  // },
 };
-
-// 최근데이터 찾기
-// const lastest = await Ins.findOne({
-//   limit: 1,
-//   order: [["createdAt", "DESC"]],
-// });

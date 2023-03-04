@@ -160,6 +160,45 @@ module.exports = {
     }
   },
 
+  getStockBySheetType: async (req, res) => {
+    try {
+      let type = req.params.type;
+
+      const stockList = await Stocks.findAll({
+        include: [
+          { model: Sheets, attributes: [], where: { type: type } },
+          // { model: Storages, attributes: [] },
+        ],
+
+        attributes: {
+          include: [
+            [sequelize.col("Sheet.pattern"), "pattern"],
+            [sequelize.col("Sheet.type"), "type"],
+            [sequelize.col("Sheet.width"), "width"],
+            [sequelize.col("Sheet.height"), "height"],
+            [sequelize.fn("sum", sequelize.col("quantity")), "total"],
+          ],
+          exclude: [
+            "date",
+            "category",
+            "quantity",
+            "createdAt",
+            "updatedAt",
+            "sheet",
+            "storage",
+            "id",
+          ],
+        },
+
+        group: ["sheet"],
+      });
+      res.status(200).json(stockList);
+    } catch (err) {
+      console.log(err);
+      return res.sendStatus(500);
+    }
+  },
+
   getStockBySheetId: async (req, res) => {
     try {
       let sheet = req.params.sheet;

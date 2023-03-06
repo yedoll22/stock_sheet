@@ -65,10 +65,6 @@ module.exports = {
             [sequelize.col("Sheet.type"), "type"],
             [sequelize.col("Sheet.width"), "width"],
             [sequelize.col("Sheet.height"), "height"],
-
-            // [sequelize.literal("json_arrayagg((select distinct name from Storages where Stocks.storage = Storages.id))"
-            //   ),"Name",],
-
             [sequelize.fn("sum", sequelize.col("quantity")), "total"],
           ],
           exclude: [
@@ -85,7 +81,6 @@ module.exports = {
 
         group: ["sheet"],
       });
-      // select pattern, type, concat('{name:',json_arrayagg((select distinct name from Storages where Stocks.storage = Storages.id)),', color:',json_arrayagg((select distinct color_code from Storages where Stocks.storage = Storages.id)),'}'), sum(quantity) from Stocks left join Sheets on Stocks.sheet = Sheets.id group by sheet;
 
       res.status(200).json(stockList);
     } catch (err) {

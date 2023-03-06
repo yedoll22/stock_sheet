@@ -1,4 +1,4 @@
-const { Sheets } = require("../models");
+const { Sheets, sequelize } = require("../models");
 
 module.exports = {
   get: async (req, res) => {
@@ -11,6 +11,45 @@ module.exports = {
         ],
       });
       res.status(200).json(sheetList);
+    } catch (err) {
+      console.log(err);
+      return res.sendStatus(500);
+    }
+  },
+
+  getTypeList: async (req, res) => {
+    try {
+      const typeList = [];
+      const typeObj = await Sheets.findAll({
+        attributes: [[sequelize.fn("DISTINCT", sequelize.col("type")), "type"]],
+      });
+
+      for (key in typeObj) {
+        typeList.push(typeObj[key].type);
+      }
+
+      res.status(200).json(typeArr);
+    } catch (err) {
+      console.log(err);
+      return res.sendStatus(500);
+    }
+  },
+
+  getPatternList: async (req, res) => {
+    try {
+      const type = req.params.type;
+      const patternList = [];
+      const patternObj = await Sheets.findAll({
+        attributes: [
+          [sequelize.fn("DISTINCT", sequelize.col("pattern")), "pattern"],
+        ],
+        where: { type: type },
+      });
+
+      for (key in patternObj) {
+        patternList.push(patternObj[key].pattern);
+      }
+      res.status(200).json(patternList);
     } catch (err) {
       console.log(err);
       return res.sendStatus(500);

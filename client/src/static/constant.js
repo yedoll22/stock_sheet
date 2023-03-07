@@ -1,5 +1,5 @@
 const PATHNAME = Object.freeze({
-  type: '/type',
+  sheet: '/sheet',
   storage: '/storage'
 })
 
@@ -24,50 +24,11 @@ const STORAGE_INFO = Object.freeze([
   { name: '인쇄실', color: '#FFF0BB' }
 ])
 
-const STORAGE_NAME = STORAGE_INFO.map((storage) => storage.name)
-const TYPE = Object.freeze(['350IV', '350B/W', '300ART'])
-
-const PAGE_DROPDOWN_CONTENT = Object.freeze({
-  type: {
-    key: 'type',
-    title: '재질',
-    text: ['전체', ...TYPE]
-  },
-  storage: {
-    key: 'storage',
-    title: '위치',
-    text: ['전체', ...STORAGE_NAME]
-  }
-})
-
 // 🐹 패턴 추후 논의 후 추가 및 수정
-const MODAL_DROPDOWN_CONTENT = Object.freeze({
-  category: {
-    key: 'category',
-    title: '구분',
-    text: ['입고', '출고', '재고 이동', '실재고 체크', '불량']
-  },
-  type: {
-    key: 'type',
-    title: '재질',
-    text: TYPE
-  },
-  pattern: { key: 'pattern', title: '패턴', text: ['F013-투명', 'HP38'] },
-  storage: {
-    key: 'storage',
-    title: '위치',
-    text: STORAGE_NAME
-  },
-  storageFrom: {
-    key: 'storageFrom',
-    title: '보관 위치',
-    text: STORAGE_NAME
-  },
-  storageTo: {
-    key: 'storageTo',
-    title: '이동 위치',
-    text: STORAGE_NAME
-  }
+const CATEGORY_DROPDOWN_CONTENTS = Object.freeze({
+  key: 'category',
+  title: '구분',
+  text: ['입고', '출고', '재고 이동', '실재고 체크', '불량']
 })
 
 const ERROR_MSG = Object.freeze({
@@ -81,7 +42,6 @@ export {
   TAB,
   THEAD,
   STORAGE_INFO,
-  PAGE_DROPDOWN_CONTENT,
-  MODAL_DROPDOWN_CONTENT,
+  CATEGORY_DROPDOWN_CONTENTS,
   ERROR_MSG
 }

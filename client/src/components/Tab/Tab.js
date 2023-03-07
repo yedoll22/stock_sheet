@@ -24,8 +24,8 @@ function Tab() {
     <nav className="flex justify-between items-center mb-7">
       <div className="border border-[#074073]">
         <Link
-          to={`${PATHNAME.type}`}
-          className={`${getTabStyle(PATHNAME.type)}`}
+          to={`${PATHNAME.sheet}`}
+          className={`${getTabStyle(PATHNAME.sheet)}`}
         >
           {TAB.type}
         </Link>

@@ -1,6 +1,6 @@
 import { useCallback, useState } from 'react'
 import { ERROR_MSG, MODAL_DROPDOWN_CONTENT } from '../static/constant'
-import useOutSideRef from '../util/useOutSideRef'
+import useOutSideRef from '../hooks/useOutSideRef'
 import * as stockModalApi from '../api/stockModal'
 
 import ModalUpperContents from './ModalUpperContents'
@@ -82,10 +82,7 @@ function Modal({ handleToggle }) {
       ]
 
   const handleClickModalView = (e) => {
-    // const { target, currentTarget } = e
-    // if (target !== currentTarget) return
     e.stopPropagation()
-
     if (isCategoryOpen) {
       setIsCategoryOpen(false)
     } else if (isTypeOpen) {
@@ -101,13 +98,11 @@ function Modal({ handleToggle }) {
     }
   }
 
-  const handleChangeDate = (e) => {
-    setDate(e.target.value)
-  }
+  const handleChangeDate = (e) => setDate(e.target.value)
   const handleChangeQuantity = (e) => {
-    const { value } = e.target
-    const removedCommaValue = Number(value.replaceAll(',', ''))
-    if (isNaN(removedCommaValue)) return
+    const removedCommaValue = e.target.value.replaceAll(',', '')
+    const numberValue = Number(removedCommaValue)
+    if (isNaN(numberValue)) return
     setQuantityStr(removedCommaValue.toLocaleString())
   }
 
@@ -139,9 +134,9 @@ function Modal({ handleToggle }) {
     [checkIsStockMoveSelected]
   )
 
-  const hasDropdownError = (selectedCategory) => {
+  const hasDropdownError = () => {
     const copyedSelected = selected
-    if (selectedCategory === '재고 이동') {
+    if (category === '재고 이동') {
       delete copyedSelected.storage
     } else {
       delete copyedSelected.storageFrom
@@ -156,31 +151,31 @@ function Modal({ handleToggle }) {
     return false
   }
 
-  const hasQuantityError = (selectedCategory, quantityNum) => {
+  const hasQuantityError = (quantityNum) => {
     let hasError = false
-    if (selectedCategory === '출고' && quantityNum > 0) {
+    if (category === '출고' && quantityNum > 0) {
       setErrorMsg(ERROR_MSG.positiveQuantity)
       hasError = true
     }
-    if (selectedCategory !== '출고' && quantityNum < 0) {
+    if (category !== '출고' && quantityNum < 0) {
       setErrorMsg(ERROR_MSG.negativeQuantity)
       hasError = true
     }
     return hasError
   }
 
-  const handleSubmitModal = (selectedCategory) => {
+  const handleSubmitModal = () => {
     const storageName = storage
     const quantity = Number(quantityStr.replaceAll(',', ''))
     // submit 전에 체크 할 것
     // 출고 / 재고이동은 기존 수량을 체크하는 로직 필요 (마이너스 수량이 되지 않도록)
-    if (hasDropdownError(selectedCategory)) return
-    if (hasQuantityError(selectedCategory, quantity)) return
+    if (hasDropdownError()) return
+    if (hasQuantityError(quantity)) return
 
     // submit 한 뒤 화면상에서 실시간 state 업데이트가 안됨
     // => then chaining에서 setter 함수로 state 업데이트 해줘야됨
     // tableContents 배열 state, setter 함수를 가져와야 됨....ㅠㅠ
-    if (selectedCategory === '입고' || selectedCategory === '출고') {
+    if (category === '입고' || category === '출고') {
       stockModalApi
         .stockIn(date, category, type, pattern, quantity, storageName)
         .then(() => handleToggle())
@@ -223,7 +218,6 @@ function Modal({ handleToggle }) {
         </div>
         <div className="text-center text-red-600">{errorMsg}</div>
         <ModalButtons
-          category={category}
           handleSubmit={handleSubmitModal}
           handleToggle={handleToggle}
         />

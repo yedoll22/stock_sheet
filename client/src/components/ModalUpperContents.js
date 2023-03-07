@@ -1,6 +1,6 @@
 import { memo } from 'react'
 import { MODAL_DROPDOWN_CONTENT } from '../static/constant'
-import useOutSideRef from '../util/useOutSideRef'
+import useOutSideRef from '../hooks/useOutSideRef'
 
 import Dropdown from './Dropdown'
 

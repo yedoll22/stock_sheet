@@ -1,6 +1,6 @@
 import { useState, useCallback, useEffect } from 'react'
 import { PAGE_DROPDOWN_CONTENT } from '../static/constant'
-import useOutSideRef from '../util/useOutSideRef'
+import useOutSideRef from '../hooks/useOutSideRef'
 import * as stockPagesApi from '../api/stockPages'
 import addThousandsCommaInTableData from '../util/addThousandsCommaInTableData'
 

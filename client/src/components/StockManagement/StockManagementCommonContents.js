@@ -1,7 +1,6 @@
-import { memo } from 'react'
-import Dropdown from './Dropdown'
+import Dropdown from '../UI/Dropdown'
 
-function ModalCommonContents({
+function StockManagementCommonContents({
   inputValue,
   handleChangeInput,
   dropdownMappings,
@@ -20,7 +19,7 @@ function ModalCommonContents({
           selectOption={selectOption}
         />
       ))}
-      <div className="mb-4">
+      <div>
         <span className="font-bold mr-3">수량</span>
         <input
           className="border border-[#D5DBE2] rounded h-7 w-[128px] pl-3 py-1 text-right"
@@ -33,4 +32,4 @@ function ModalCommonContents({
   )
 }
 
-export default memo(ModalCommonContents)
+export default StockManagementCommonContents

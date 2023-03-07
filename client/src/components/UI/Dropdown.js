@@ -9,10 +9,10 @@ function Dropdown({
   selectOption
 }) {
   return (
-    <div className="mb-4 flex item-center relative">
+    <div className="flex item-center relative">
       <div className="font-bold mr-3">{content.title}</div>
       <div
-        onClick={() => setIsOpen(!isOpen)}
+        onClick={() => setIsOpen((prev) => !prev)}
         ref={outsideRef}
         className="border border-[#D5DBE2] rounded h-7 min-w-[8rem] items-center flex justify-between pl-3 py-1 cursor-pointer"
       >

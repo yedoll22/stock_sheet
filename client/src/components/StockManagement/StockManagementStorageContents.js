@@ -1,7 +1,6 @@
-import { memo } from 'react'
-import Dropdown from './Dropdown'
+import Dropdown from '../UI/Dropdown'
 
-function ModalStorageContents({ dropdownMappings, selectOption }) {
+function StockManagementStorageContents({ dropdownMappings, selectOption }) {
   return (
     <>
       {dropdownMappings.map((mapping, i) => (
@@ -19,4 +18,4 @@ function ModalStorageContents({ dropdownMappings, selectOption }) {
   )
 }
 
-export default memo(ModalStorageContents)
+export default StockManagementStorageContents

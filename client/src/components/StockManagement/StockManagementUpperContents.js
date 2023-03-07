@@ -1,10 +1,9 @@
-import { memo } from 'react'
-import { MODAL_DROPDOWN_CONTENT } from '../static/constant'
-import useOutSideRef from '../util/useOutSideRef'
+import { CATEGORY_DROPDOWN_CONTENTS } from '../../static/constant'
+import useOutSideRef from '../../hooks/useOutSideRef'
 
-import Dropdown from './Dropdown'
+import Dropdown from '../UI/Dropdown'
 
-function ModalUpperContents({
+function StockManagementUpperContents({
   inputValue,
   handleChangeInput,
   isOpen,
@@ -29,7 +28,7 @@ function ModalUpperContents({
         outsideRef={categoryRef}
         isOpen={isOpen}
         setIsOpen={setIsOpen}
-        content={MODAL_DROPDOWN_CONTENT.category}
+        content={CATEGORY_DROPDOWN_CONTENTS}
         selected={selected}
         selectOption={selectOption}
       />
@@ -37,4 +36,4 @@ function ModalUpperContents({
   )
 }
 
-export default memo(ModalUpperContents)
+export default StockManagementUpperContents

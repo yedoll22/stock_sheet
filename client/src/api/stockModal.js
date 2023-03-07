@@ -41,3 +41,13 @@ export function stockMove(
     storageName
   })
 }
+
+export function getTypeStorageDropdown() {
+  const type = http.get('/dropdown/type')
+  const storeage = http.get('/dropdown/storage')
+  return Promise.all([type, storeage])
+}
+
+export function getPatternDropdown(type) {
+  return http.get(`/dropdown/pattern/${type}`)
+}

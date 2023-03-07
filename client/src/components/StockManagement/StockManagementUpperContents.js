@@ -1,4 +1,4 @@
-import { MODAL_DROPDOWN_CONTENT } from '../../static/constant'
+import { CATEGORY_DROPDOWN_CONTENTS } from '../../static/constant'
 import useOutSideRef from '../../hooks/useOutSideRef'
 
 import Dropdown from '../UI/Dropdown'
@@ -28,7 +28,7 @@ function StockManagementUpperContents({
         outsideRef={categoryRef}
         isOpen={isOpen}
         setIsOpen={setIsOpen}
-        content={MODAL_DROPDOWN_CONTENT.category}
+        content={CATEGORY_DROPDOWN_CONTENTS}
         selected={selected}
         selectOption={selectOption}
       />

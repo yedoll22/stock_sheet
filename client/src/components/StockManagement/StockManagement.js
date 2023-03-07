@@ -1,5 +1,5 @@
-import { useCallback, useState } from 'react'
-import { ERROR_MSG, MODAL_DROPDOWN_CONTENT } from '../../static/constant'
+import { useCallback, useEffect, useState } from 'react'
+import { ERROR_MSG, CATEGORY_DROPDOWN_CONTENTS } from '../../static/constant'
 import useOutSideRef from '../../hooks/useOutSideRef'
 import * as stockModalApi from '../../api/stockModal'
 
@@ -37,20 +37,74 @@ function StockManagement({ handleToggle }) {
   const [storageToRef, isStorageToOpen, setIsStorageToOpen] =
     useOutSideRef(false)
 
+  const [dropdownContents, setDropdownContents] = useState({
+    type: {
+      key: 'type',
+      title: '재질',
+      text: []
+    },
+    pattern: {
+      key: 'pattern',
+      title: '패턴',
+      text: []
+    },
+    storage: {
+      key: 'storage',
+      title: '위치',
+      text: []
+    },
+    storageFrom: {
+      key: 'storageFrom',
+      title: '보관 위치',
+      text: []
+    },
+    storageTo: {
+      key: 'storageTo',
+      title: '이동 위치',
+      text: []
+    }
+  })
+
+  useEffect(() => {
+    stockModalApi.getTypeStorageDropdown().then((res) => {
+      const [typeRes, storageRes] = res
+      setDropdownContents((prev) => ({
+        ...prev,
+        type: { ...prev.type, text: typeRes.data },
+        storage: { ...prev.storage, text: storageRes.data },
+        storageFrom: { ...prev.storageFrom, text: storageRes.data },
+        storageTo: { ...prev.storageTo, text: storageRes.data }
+      }))
+    })
+  }, [])
+
+  useEffect(() => {
+    if (type === '선택하세요.') return
+    stockModalApi
+      .getPatternDropdown(type)
+      .then((res) =>
+        setDropdownContents((prev) => ({
+          ...prev,
+          pattern: { ...prev.pattern, text: res.data }
+        }))
+      )
+      .then(() => setSelected((prev) => ({ ...prev, pattern: '선택하세요.' })))
+  }, [type])
+
   const commonDropdownMappings = [
     {
       outSideRef: typeRef,
       selected: type,
       isOpen: isTypeOpen,
       setIsOpen: setIsTypeOpen,
-      content: MODAL_DROPDOWN_CONTENT.type
+      content: dropdownContents.type
     },
     {
       outSideRef: patternRef,
       selected: pattern,
       isOpen: isPatternOpen,
       setIsOpen: setIsPatternOpen,
-      content: MODAL_DROPDOWN_CONTENT.pattern
+      content: dropdownContents.pattern
     }
   ]
 
@@ -61,14 +115,14 @@ function StockManagement({ handleToggle }) {
           selected: storageFrom,
           isOpen: isStorageFromOpen,
           setIsOpen: setIsStorageFromOpen,
-          content: MODAL_DROPDOWN_CONTENT.storageFrom
+          content: dropdownContents.storageFrom
         },
         {
           outSideRef: storageToRef,
           selected: storageTo,
           isOpen: isStorageToOpen,
           setIsOpen: setIsStorageToOpen,
-          content: MODAL_DROPDOWN_CONTENT.storageTo
+          content: dropdownContents.storageTo
         }
       ]
     : [
@@ -77,7 +131,7 @@ function StockManagement({ handleToggle }) {
           selected: storage,
           isOpen: isStorageOpen,
           setIsOpen: setIsStorageOpen,
-          content: MODAL_DROPDOWN_CONTENT.storage
+          content: dropdownContents.storage
         }
       ]
 
@@ -115,7 +169,7 @@ function StockManagement({ handleToggle }) {
 
   const selectOption = useCallback(
     (data, key) => {
-      if (key === MODAL_DROPDOWN_CONTENT.category.key) {
+      if (key === CATEGORY_DROPDOWN_CONTENTS.key) {
         checkIsStockMoveSelected(data)
         setSelected({
           category: data,
@@ -175,9 +229,15 @@ function StockManagement({ handleToggle }) {
     // submit 한 뒤 화면상에서 실시간 state 업데이트가 안됨
     // => then chaining에서 setter 함수로 state 업데이트 해줘야됨
     // tableContents 배열 state, setter 함수를 가져와야 됨....ㅠㅠ
-    if (category === '입고' || category === '출고') {
+    if (category === '입고') {
       stockModalApi
         .stockIn(date, category, type, pattern, quantity, storageName)
+        .then(() => handleToggle())
+        .then((err) => console.error(err))
+    }
+    if (category === '출고') {
+      stockModalApi
+        .stockOut(date, category, type, pattern, quantity, storageName)
         .then(() => handleToggle())
         .then((err) => console.error(err))
     }
@@ -192,29 +252,31 @@ function StockManagement({ handleToggle }) {
         className="px-6 py-8 bg-white rounded-md min-w-[30rem]"
         onClick={handleClickModalView}
       >
-        <StockManagementUpperContents
-          inputValue={date}
-          handleChangeInput={handleChangeDate}
-          isOpen={isCategoryOpen}
-          setIsOpen={setIsCategoryOpen}
-          selected={category}
-          selectOption={selectOption}
-        />
-        <div
-          className={`grid grid-cols-2 ${
-            isStockMoveSelected ? 'md:grid-cols-3' : 'md:grid-cols-4'
-          } md:gap-4 place-items-center`}
-        >
-          <StockManagementCommonContents
-            inputValue={quantityStr}
-            handleChangeInput={handleChangeQuantity}
-            dropdownMappings={commonDropdownMappings}
+        <div className="mb-10">
+          <StockManagementUpperContents
+            inputValue={date}
+            handleChangeInput={handleChangeDate}
+            isOpen={isCategoryOpen}
+            setIsOpen={setIsCategoryOpen}
+            selected={category}
             selectOption={selectOption}
           />
-          <StockManagementStorageContents
-            dropdownMappings={storageDropdownMappings}
-            selectOption={selectOption}
-          />
+          <div
+            className={`grid grid-cols-2 gap-4 ${
+              isStockMoveSelected ? 'md:grid-cols-3' : 'md:grid-cols-4'
+            } place-items-center`}
+          >
+            <StockManagementCommonContents
+              inputValue={quantityStr}
+              handleChangeInput={handleChangeQuantity}
+              dropdownMappings={commonDropdownMappings}
+              selectOption={selectOption}
+            />
+            <StockManagementStorageContents
+              dropdownMappings={storageDropdownMappings}
+              selectOption={selectOption}
+            />
+          </div>
         </div>
         <div className="text-center text-red-600">{errorMsg}</div>
         <StockManagementButtons

@@ -19,7 +19,7 @@ function Dropdown({
         {selected}
         <img className="w-5 h-5" src="/images/Down arrow.png" alt="downArrow" />
         {isOpen && (
-          <div className="absolute top-8 left-10 border border-gray-100 bg-white shadow-lg rounded py-2 px-[10px] min-w-[8rem] z-20">
+          <div className="absolute top-8 left-10 border border-gray-100 bg-white shadow-lg rounded py-2 px-[10px] min-w-[8rem] overflow-auto max-h-[60vh] z-20">
             {content.text.map((data) => (
               <div
                 onClick={() => selectOption(data, content.key)}

@@ -1,8 +1,8 @@
 import { useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
-import { PATHNAME, TAB } from '../static/constant'
+import { PATHNAME, TAB } from '../../static/constant'
 
-import Modal from './Modal'
+import StockManagement from '../StockManagement/StockManagement'
 
 function Tab() {
   const { pathname } = useLocation()
@@ -39,7 +39,7 @@ function Tab() {
       <div className="flex justify-center items-center ml-[20px] w-[64px] h-[64px] bg-[#D2D904] text-white text-5xl font-semibold rounded-full cursor-pointer">
         <span onClick={handleToggleModal}>＋</span>
       </div>
-      {isModalOpen && <Modal handleToggle={handleToggleModal} />}
+      {isModalOpen && <StockManagement handleToggle={handleToggleModal} />}
     </nav>
   )
 }

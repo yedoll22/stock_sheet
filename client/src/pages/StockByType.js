@@ -4,9 +4,9 @@ import useOutSideRef from '../hooks/useOutSideRef'
 import * as stockPagesApi from '../api/stockPages'
 import addThousandsCommaInTableData from '../util/addThousandsCommaInTableData'
 
-import Dropdown from '../components/Dropdown'
-import Tab from '../components/Tab'
-import Table from '../components/Table'
+import Dropdown from '../components/UI/Dropdown'
+import Tab from '../components/Tab/Tab'
+import Table from '../components/StockTable/StockTable'
 
 function StockByType() {
   const [outsideRef, isOpen, setIsOpen] = useOutSideRef(false)

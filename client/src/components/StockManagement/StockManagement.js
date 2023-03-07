@@ -1,14 +1,14 @@
 import { useCallback, useState } from 'react'
-import { ERROR_MSG, MODAL_DROPDOWN_CONTENT } from '../static/constant'
-import useOutSideRef from '../hooks/useOutSideRef'
-import * as stockModalApi from '../api/stockModal'
+import { ERROR_MSG, MODAL_DROPDOWN_CONTENT } from '../../static/constant'
+import useOutSideRef from '../../hooks/useOutSideRef'
+import * as stockModalApi from '../../api/stockModal'
 
-import ModalUpperContents from './ModalUpperContents'
-import ModalCommonContents from './ModalCommonContents'
-import ModalStorageContents from './ModalStorageContents'
-import ModalButtons from './ModalButtons'
+import StockManagementUpperContents from './StockManagementUpperContents'
+import StockManagementCommonContents from './StockManagementCommonContents'
+import StockManagementStorageContents from './StockManagementStorageContents'
+import StockManagementButtons from './StockManagementButtons'
 
-function Modal({ handleToggle }) {
+function StockManagement({ handleToggle }) {
   const today = `${new Date().getFullYear()}-${String(
     new Date().getMonth() + 1
   ).padStart(2, '0')}-${String(new Date().getDate()).padStart(2, '0')}`
@@ -192,7 +192,7 @@ function Modal({ handleToggle }) {
         className="px-6 py-8 bg-white rounded-md min-w-[30rem]"
         onClick={handleClickModalView}
       >
-        <ModalUpperContents
+        <StockManagementUpperContents
           inputValue={date}
           handleChangeInput={handleChangeDate}
           isOpen={isCategoryOpen}
@@ -205,19 +205,19 @@ function Modal({ handleToggle }) {
             isStockMoveSelected ? 'md:grid-cols-3' : 'md:grid-cols-4'
           } md:gap-4 place-items-center`}
         >
-          <ModalCommonContents
+          <StockManagementCommonContents
             inputValue={quantityStr}
             handleChangeInput={handleChangeQuantity}
             dropdownMappings={commonDropdownMappings}
             selectOption={selectOption}
           />
-          <ModalStorageContents
+          <StockManagementStorageContents
             dropdownMappings={storageDropdownMappings}
             selectOption={selectOption}
           />
         </div>
         <div className="text-center text-red-600">{errorMsg}</div>
-        <ModalButtons
+        <StockManagementButtons
           handleSubmit={handleSubmitModal}
           handleToggle={handleToggle}
         />
@@ -226,4 +226,4 @@ function Modal({ handleToggle }) {
   )
 }
 
-export default Modal
+export default StockManagement

@@ -1,7 +1,6 @@
-import { memo } from 'react'
-import Dropdown from './Dropdown'
+import Dropdown from '../UI/Dropdown'
 
-function ModalCommonContents({
+function StockManagementCommonContents({
   inputValue,
   handleChangeInput,
   dropdownMappings,
@@ -33,4 +32,4 @@ function ModalCommonContents({
   )
 }
 
-export default memo(ModalCommonContents)
+export default StockManagementCommonContents

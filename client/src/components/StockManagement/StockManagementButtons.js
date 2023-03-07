@@ -1,6 +1,6 @@
-import Button from './UI/Button'
+import Button from '../UI/Button'
 
-function ModalButtons({ handleSubmit, handleToggle }) {
+function StockManagementButtons({ handleSubmit, handleToggle }) {
   return (
     <div className="flex justify-center mt-4">
       <Button styles="bg-[#074073] text-white" handleClickBtn={handleSubmit}>
@@ -13,4 +13,4 @@ function ModalButtons({ handleSubmit, handleToggle }) {
   )
 }
 
-export default ModalButtons
+export default StockManagementButtons

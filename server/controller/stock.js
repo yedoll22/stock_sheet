@@ -57,7 +57,10 @@ module.exports = {
       }
 
       const stockList = await Stocks.findAll({
-        include: [{ model: Sheets, attributes: [], where: { id: sheetArr } }],
+        include: [
+          { model: Sheets, attributes: [], where: { id: sheetArr } },
+          { model: Storages, attributes: [] },
+        ],
 
         attributes: {
           include: [
@@ -80,6 +83,12 @@ module.exports = {
         },
 
         group: ["sheet"],
+        order: [
+          sequelize.col("Sheet.type"),
+          "type",
+          sequelize.col("Sheet.pattern"),
+          "pattern",
+        ],
       });
 
       res.status(200).json(stockList);
@@ -120,6 +129,13 @@ module.exports = {
         },
 
         group: ["storage", "sheet"],
+        order: [
+          "storage",
+          sequelize.col("Sheet.type"),
+          "type",
+          sequelize.col("Sheet.pattern"),
+          "pattern",
+        ],
       });
 
       res.status(200).json(stockList);

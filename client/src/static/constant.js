@@ -24,29 +24,23 @@ const STORAGE_INFO = Object.freeze([
   { name: '인쇄실', color: '#FFF0BB' }
 ])
 
-const STORAGE_NAMES = STORAGE_INFO.map((storage) => storage.name)
-const TYPES = Object.freeze([
-  '350IV',
-  '350B/W',
-  '300ART_KP63',
-  '300ART_KP73',
-  '300ART_KP85'
-])
+const STORAGE_NAME = STORAGE_INFO.map((storage) => storage.name)
+const TYPE = Object.freeze(['350IV', '350B/W', '300ART'])
 
 const PAGE_DROPDOWN_CONTENT = Object.freeze({
   type: {
     key: 'type',
     title: '재질',
-    text: ['전체', ...TYPES]
+    text: ['전체', ...TYPE]
   },
   storage: {
     key: 'storage',
     title: '위치',
-    text: ['전체', ...STORAGE_NAMES]
+    text: ['전체', ...STORAGE_NAME]
   }
 })
 
-// 🐹 패턴, 수량은 추후 논의 후 추가 및 수정
+// 🐹 패턴 추후 논의 후 추가 및 수정
 const MODAL_DROPDOWN_CONTENT = Object.freeze({
   category: {
     key: 'category',
@@ -56,28 +50,23 @@ const MODAL_DROPDOWN_CONTENT = Object.freeze({
   type: {
     key: 'type',
     title: '재질',
-    text: TYPES
+    text: TYPE
   },
   pattern: { key: 'pattern', title: '패턴', text: ['F013-투명', 'HP38'] },
-  quantity: {
-    key: 'quantity',
-    title: '수량',
-    text: [1000, 2000, 3000, 4000, 5000, 6000, 7000, 8000, 9000, 10000]
-  },
   storage: {
     key: 'storage',
     title: '위치',
-    text: STORAGE_NAMES
+    text: STORAGE_NAME
   },
   storageFrom: {
     key: 'storageFrom',
     title: '보관 위치',
-    text: STORAGE_NAMES
+    text: STORAGE_NAME
   },
   storageTo: {
     key: 'storageTo',
     title: '이동 위치',
-    text: STORAGE_NAMES
+    text: STORAGE_NAME
   }
 })
 

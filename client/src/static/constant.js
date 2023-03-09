@@ -28,7 +28,7 @@ const STORAGE_INFO = Object.freeze([
 const CATEGORY_DROPDOWN_CONTENTS = Object.freeze({
   key: 'category',
   title: '구분',
-  text: ['입고', '출고', '재고 이동', '실재고 체크', '불량']
+  text: ['입고', '출고', '재고이동', '실재고 체크', '불량']
 })
 
 const ERROR_MSG = Object.freeze({

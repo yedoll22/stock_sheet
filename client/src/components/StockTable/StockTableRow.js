@@ -1,8 +1,10 @@
 import { useMemo } from 'react'
+import { useTableValue } from '../../store/useTable'
 import changeByTableByPathname from '../../util/changeByTableByPathname'
 import StockTableData from './StockTableData'
 
-function StockTableRow({ pathname, rowContents }) {
+function StockTableRow({ rowContents }) {
+  const { pathname } = useTableValue()
   const changableRowContents = useMemo(
     () => changeByTableByPathname(pathname, rowContents),
     [pathname, rowContents]

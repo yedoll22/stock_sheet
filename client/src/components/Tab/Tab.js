@@ -1,11 +1,12 @@
 import { useState } from 'react'
-import { Link, useLocation } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import { PATHNAME, TAB } from '../../static/constant'
+import { useTableValue } from '../../store/useTable'
 
 import StockManagement from '../StockManagement/StockManagement'
 
 function Tab() {
-  const { pathname } = useLocation()
+  const { pathname } = useTableValue()
   const [isModalOpen, setIsModalOpen] = useState(false)
 
   const getTabStyle = (active) => {

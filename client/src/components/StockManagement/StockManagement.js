@@ -1,7 +1,12 @@
-import { useCallback, useEffect, useState } from 'react'
-import { ERROR_MSG, CATEGORY_DROPDOWN_CONTENTS } from '../../static/constant'
+import { useEffect, useState } from 'react'
+import {
+  ERROR_MSG,
+  CATEGORY_DROPDOWN_CONTENTS,
+  PATHNAME
+} from '../../static/constant'
 import useOutSideRef from '../../hooks/useOutSideRef'
 import * as stockModalApi from '../../api/stockModal'
+import { useTableActions, useTableValue } from '../../store/useTable'
 
 import StockManagementUpperContents from './StockManagementUpperContents'
 import StockManagementCommonContents from './StockManagementCommonContents'
@@ -12,6 +17,18 @@ function StockManagement({ handleToggle }) {
   const today = `${new Date().getFullYear()}-${String(
     new Date().getMonth() + 1
   ).padStart(2, '0')}-${String(new Date().getDate()).padStart(2, '0')}`
+
+  const tableValue = useTableValue()
+  const tableActions = useTableActions()
+
+  const [, isCategoryOpen, setIsCategoryOpen] = useOutSideRef(false)
+  const [typeRef, isTypeOpen, setIsTypeOpen] = useOutSideRef(false)
+  const [patternRef, isPatternOpen, setIsPatternOpen] = useOutSideRef(false)
+  const [storageRef, isStorageOpen, setIsStorageOpen] = useOutSideRef(false)
+  const [storageFromRef, isStorageFromOpen, setIsStorageFromOpen] =
+    useOutSideRef(false)
+  const [storageToRef, isStorageToOpen, setIsStorageToOpen] =
+    useOutSideRef(false)
 
   const [selected, setSelected] = useState({
     category: '선택하세요.',
@@ -27,16 +44,6 @@ function StockManagement({ handleToggle }) {
   const [quantityStr, setQuantityStr] = useState('')
   const [isStockMoveSelected, setIsStockMoveSelected] = useState(false)
   const [errorMsg, setErrorMsg] = useState(null)
-
-  const [, isCategoryOpen, setIsCategoryOpen] = useOutSideRef(false)
-  const [typeRef, isTypeOpen, setIsTypeOpen] = useOutSideRef(false)
-  const [patternRef, isPatternOpen, setIsPatternOpen] = useOutSideRef(false)
-  const [storageRef, isStorageOpen, setIsStorageOpen] = useOutSideRef(false)
-  const [storageFromRef, isStorageFromOpen, setIsStorageFromOpen] =
-    useOutSideRef(false)
-  const [storageToRef, isStorageToOpen, setIsStorageToOpen] =
-    useOutSideRef(false)
-
   const [dropdownContents, setDropdownContents] = useState({
     type: {
       key: 'type',
@@ -157,40 +164,37 @@ function StockManagement({ handleToggle }) {
     const removedCommaValue = e.target.value.replaceAll(',', '')
     const numberValue = Number(removedCommaValue)
     if (isNaN(numberValue)) return
-    setQuantityStr(removedCommaValue.toLocaleString())
+    setQuantityStr(numberValue.toLocaleString())
   }
 
-  const checkIsStockMoveSelected = useCallback((selected) => {
-    if (selected === '재고 이동') {
+  const checkIsStockMoveSelected = (selected) => {
+    if (selected === '재고이동') {
       return setIsStockMoveSelected(true)
     }
     return setIsStockMoveSelected(false)
-  }, [])
+  }
 
-  const selectOption = useCallback(
-    (data, key) => {
-      if (key === CATEGORY_DROPDOWN_CONTENTS.key) {
-        checkIsStockMoveSelected(data)
-        setSelected({
-          category: data,
-          type: '선택하세요.',
-          pattern: '선택하세요.',
-          storage: '선택하세요.',
-          storageFrom: '선택하세요.',
-          storageTo: '선택하세요.'
-        })
-        setQuantityStr('')
-        setErrorMsg(null)
-      } else {
-        setSelected((prev) => ({ ...prev, [key]: data }))
-      }
-    },
-    [checkIsStockMoveSelected]
-  )
+  const selectOption = (data, key) => {
+    if (key === CATEGORY_DROPDOWN_CONTENTS.key) {
+      checkIsStockMoveSelected(data)
+      setSelected({
+        category: data,
+        type: '선택하세요.',
+        pattern: '선택하세요.',
+        storage: '선택하세요.',
+        storageFrom: '선택하세요.',
+        storageTo: '선택하세요.'
+      })
+      setQuantityStr('')
+      setErrorMsg(null)
+    } else {
+      setSelected((prev) => ({ ...prev, [key]: data }))
+    }
+  }
 
   const hasDropdownError = () => {
     const copyedSelected = selected
-    if (category === '재고 이동') {
+    if (category === '재고이동') {
       delete copyedSelected.storage
     } else {
       delete copyedSelected.storageFrom
@@ -219,28 +223,56 @@ function StockManagement({ handleToggle }) {
   }
 
   const handleSubmitModal = () => {
-    const storageName = storage
+    let storageName = storage
     const quantity = Number(quantityStr.replaceAll(',', ''))
     // submit 전에 체크 할 것
     // 출고 / 재고이동은 기존 수량을 체크하는 로직 필요 (마이너스 수량이 되지 않도록)
     if (hasDropdownError()) return
     if (hasQuantityError(quantity)) return
 
-    // submit 한 뒤 화면상에서 실시간 state 업데이트가 안됨
-    // => then chaining에서 setter 함수로 state 업데이트 해줘야됨
-    // tableContents 배열 state, setter 함수를 가져와야 됨....ㅠㅠ
     if (category === '입고') {
       stockModalApi
         .stockIn(date, category, type, pattern, quantity, storageName)
         .then(() => handleToggle())
-        .then((err) => console.error(err))
+        .catch((err) => console.error(err))
     }
     if (category === '출고') {
       stockModalApi
         .stockOut(date, category, type, pattern, quantity, storageName)
         .then(() => handleToggle())
-        .then((err) => console.error(err))
+        .catch((err) => console.error(err))
     }
+    if (category === '재고이동') {
+      storageName = storageTo
+      const oldStorageName = storageFrom
+      stockModalApi
+        .stockMove(
+          date,
+          category,
+          type,
+          pattern,
+          quantity,
+          oldStorageName,
+          storageName
+        )
+        .then(() => handleToggle())
+        .catch((err) => console.error(err))
+    }
+
+    let req = {
+      height: null, // 규격(height, width)은 response로 처리하지 않을거면 일단 null
+      type,
+      pattern,
+      total: quantity
+    }
+    if (tableValue.pathname === PATHNAME.storage) {
+      req = {
+        ...req,
+        name: storage,
+        color: null // color는...
+      }
+    }
+    tableActions.update(req)
   }
 
   return (

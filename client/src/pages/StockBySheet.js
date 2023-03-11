@@ -1,13 +1,9 @@
-import { useState, useCallback, useEffect } from 'react'
-import { PATHNAME } from '../static/constant'
-
-import * as stockPagesApi from '../api/stockPages'
+import { useState, useEffect } from 'react'
 import useOutSideRef from '../hooks/useOutSideRef'
-import addThousandsCommaInTableData from '../util/addThousandsCommaInTableData'
+import * as stockPagesApi from '../api/stockPages'
 
+import StockPageWrapper from './StockPageWrapper'
 import Dropdown from '../components/UI/Dropdown'
-import Tab from '../components/Tab/Tab'
-import Table from '../components/StockTable/StockTable'
 
 function StockBySheet() {
   const [typeRef, isTypeOpen, setIsTypeOpen] = useOutSideRef(false)
@@ -16,7 +12,6 @@ function StockBySheet() {
     type: '선택하세요.',
     pattern: '선택하세요.'
   })
-  const [tableContents, setTableContents] = useState([])
   const [dropdownContents, setDropdownContents] = useState({
     type: {
       key: 'type',
@@ -31,21 +26,11 @@ function StockBySheet() {
   })
 
   useEffect(() => {
-    stockPagesApi
-      .getStockOnPage(`${PATHNAME.sheet}`, selected)
-      .then((res) => {
-        const tableData = addThousandsCommaInTableData(res.data)
-        setTableContents(tableData)
-      })
-      .catch((err) => console.error(err))
-  }, [selected])
-
-  useEffect(() => {
     stockPagesApi.getTypeDropdown().then((res) =>
       setDropdownContents((prev) => ({
         ...prev,
         type: { ...prev.type, text: ['전체', ...res.data] }
-      }))
+      })).catch((err) => console.error(err))
     )
   }, [])
 
@@ -62,18 +47,18 @@ function StockBySheet() {
         }))
       )
       .then(() => setSelected((prev) => ({ ...prev, pattern: '선택하세요.' })))
+      .catch((err) => console.error(err))
   }, [selected.type])
 
-  const selectOption = useCallback((data, key) => {
+  const selectOption = (data, key) => {
     setSelected((prev) => ({ ...prev, [key]: data }))
-  }, [])
+  }
 
   const typeIsSelected =
     selected.type !== '선택하세요.' && selected.type !== '전체'
 
   return (
-    <>
-      <Tab />
+    <StockPageWrapper selected={selected}>
       <div className="mb-7 flex">
         <div className="pr-6">
           <Dropdown
@@ -96,8 +81,7 @@ function StockBySheet() {
           />
         )}
       </div>
-      <Table tableContents={tableContents} />
-    </>
+    </StockPageWrapper>
   )
 }
 

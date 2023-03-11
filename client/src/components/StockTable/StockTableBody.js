@@ -1,10 +1,13 @@
+import { useTableValue } from '../../store/useTable'
 import StockTableRow from './StockTableRow'
 
-function StockTable({ pathname, tableContents }) {
+function StockTable() {
+  const { tableDatas } = useTableValue()
+
   return (
     <tbody>
-      {tableContents.map((rowContents, i) => (
-        <StockTableRow key={i} pathname={pathname} rowContents={rowContents} />
+      {tableDatas.map((rowContents, i) => (
+        <StockTableRow key={i} rowContents={rowContents} />
       ))}
     </tbody>
   )

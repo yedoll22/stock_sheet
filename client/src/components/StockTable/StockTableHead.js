@@ -1,8 +1,11 @@
 import { useMemo } from 'react'
 import { THEAD } from '../../static/constant'
+import { useTableValue } from '../../store/useTable'
 import changeByTableByPathname from '../../util/changeByTableByPathname'
 
-function StockTableHead({ pathname }) {
+function StockTableHead() {
+  const { pathname } = useTableValue()
+
   const changableTableHeaders = useMemo(
     () => changeByTableByPathname(pathname, THEAD),
     [pathname]

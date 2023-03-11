@@ -1,18 +1,13 @@
-import { useState, useCallback, useEffect } from 'react'
-import { PATHNAME } from '../static/constant'
-
-import * as stockPagesApi from '../api/stockPages'
+import { useState, useEffect } from 'react'
 import useOutSideRef from '../hooks/useOutSideRef'
-import addThousandsCommaInTableData from '../util/addThousandsCommaInTableData'
+import * as stockPagesApi from '../api/stockPages'
 
 import Dropdown from '../components/UI/Dropdown'
-import Tab from '../components/Tab/Tab'
-import StockTable from '../components/StockTable/StockTable'
+import StockPageWrapper from './StockPageWrapper'
 
 function StockByStorage() {
   const [outsideRef, isOpen, setIsOpen] = useOutSideRef(false)
   const [selected, setSelected] = useState('선택하세요.')
-  const [tableContents, setTableContents] = useState([])
   const [storageDropdownContents, setStorageDropdownContents] = useState({
     key: 'storage',
     title: '위치',
@@ -24,27 +19,16 @@ function StockByStorage() {
       setStorageDropdownContents((prev) => ({
         ...prev,
         text: ['전체', ...res.data]
-      }))
+      })).catch((err) => console.error(err))
     )
   }, [])
 
-  useEffect(() => {
-    stockPagesApi
-      .getStockOnPage(`${PATHNAME.storage}`, selected)
-      .then((res) => {
-        const tableData = addThousandsCommaInTableData(res.data)
-        setTableContents(tableData)
-      })
-      .catch((err) => console.error(err))
-  }, [selected])
-
-  const selectOption = useCallback((data) => {
+  const selectOption = (data) => {
     setSelected(data)
-  }, [])
+  }
 
   return (
-    <>
-      <Tab />
+    <StockPageWrapper selected={selected}>
       <div className="mb-7">
         <Dropdown
           outsideRef={outsideRef}
@@ -55,8 +39,7 @@ function StockByStorage() {
           selectOption={selectOption}
         />
       </div>
-      <StockTable tableContents={tableContents} />
-    </>
+    </StockPageWrapper>
   )
 }
 
